@@ -65,6 +65,7 @@
 | 문서 유형 | 템플릿 파일 | 문서 코드 |
 |-----------|------------|----------|
 | 프로젝트 킥오프 / WBS | `/templates/kickoff-template.md` | PM-03 |
+| 요구사항정의서 / 현황분석서 | `/templates/requirements-template.md` | AY-01 |
 | IA 설계서 | `/templates/ia-template.md` | DE-02 |
 | 화면설계서 | `/templates/wireframe-template.md` | DE-03 |
 | 통합 테스트 시나리오 | `/templates/test-scenario-template.md` | TE-02 |
