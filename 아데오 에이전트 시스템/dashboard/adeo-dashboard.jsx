@@ -55,11 +55,11 @@ const OPPORTUNITIES = [
 ];
 
 const PROJECTS = [
-  { id: "PRJ-001", name: "K-바이오 연구원 정보시스템",   phase: "IM", progress: 62, team: "구축사", days_in_phase: 14, outputs: 8,  status: "normal", budget: "3.8억" },
-  { id: "PRJ-002", name: "스마트시티 통합 대시보드",     phase: "DE", progress: 38, team: "구축사", days_in_phase: 6,  outputs: 5,  status: "normal", budget: "5.2억" },
-  { id: "PRJ-003", name: "이커머스 풀스택 리뉴얼",       phase: "TE", progress: 87, team: "구축사", days_in_phase: 15, outputs: 12, status: "warn",   budget: "2.1억" },
-  { id: "PRJ-004", name: "HR SaaS 플랫폼 MVP",          phase: "AY", progress: 18, team: "구축사", days_in_phase: 2,  outputs: 2,  status: "normal", budget: "1.6억" },
-  { id: "PRJ-005", name: "공공 민원 처리 시스템",        phase: "PM", progress: 5,  team: "구축사", days_in_phase: 1,  outputs: 1,  status: "normal", budget: "4.4억" },
+  { id: "PRJ-001", name: "K-바이오 연구원 정보시스템",   phase: "IM", progress: 62, team: "구축 파트", days_in_phase: 14, outputs: 8,  status: "normal", budget: "3.8억" },
+  { id: "PRJ-002", name: "스마트시티 통합 대시보드",     phase: "DE", progress: 38, team: "구축 파트", days_in_phase: 6,  outputs: 5,  status: "normal", budget: "5.2억" },
+  { id: "PRJ-003", name: "이커머스 풀스택 리뉴얼",       phase: "TE", progress: 87, team: "구축 파트", days_in_phase: 15, outputs: 12, status: "warn",   budget: "2.1억" },
+  { id: "PRJ-004", name: "HR SaaS 플랫폼 MVP",          phase: "AY", progress: 18, team: "구축 파트", days_in_phase: 2,  outputs: 2,  status: "normal", budget: "1.6억" },
+  { id: "PRJ-005", name: "공공 민원 처리 시스템",        phase: "PM", progress: 5,  team: "구축 파트", days_in_phase: 1,  outputs: 1,  status: "normal", budget: "4.4억" },
 ];
 
 const OPERATIONS = [
@@ -301,7 +301,7 @@ function OverviewView() {
         {/* 프로젝트 파이프라인 */}
         <Card>
           <CardHeader>
-            <CardTitle>구축사 프로젝트 진행률</CardTitle>
+            <CardTitle>구축 파트 프로젝트 진행률</CardTitle>
             <CardDescription>단계별 현황 및 진행률</CardDescription>
           </CardHeader>
           <CardContent>
@@ -329,7 +329,7 @@ function OverviewView() {
         {/* 제안 파이프라인 */}
         <Card>
           <CardHeader>
-            <CardTitle>제안사 파이프라인</CardTitle>
+            <CardTitle>제안 파트 파이프라인</CardTitle>
             <CardDescription>활성 기회 목록 및 단계별 현황</CardDescription>
           </CardHeader>
           <CardContent style={{ paddingTop: 14 }}>
@@ -445,12 +445,12 @@ function OverviewView() {
 }
 
 /* ─────────────────────────────────────────────
-   VIEW: 제안사
+   VIEW: 제안 파트
 ───────────────────────────────────────────── */
 function ProposalView() {
   return (
     <div>
-      <PageHeader title="제안사" description="기회 탐색 · 제안서 작성 · 정책자금 매칭 현황" />
+      <PageHeader title="제안 파트" description="기회 탐색 · 제안서 작성 · 정책자금 매칭 현황" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 20 }}>
         {[
           { label: "활성 기회",       value: "5", sub: "건",    accent: T.proposal },
@@ -510,13 +510,13 @@ function ProposalView() {
 }
 
 /* ─────────────────────────────────────────────
-   VIEW: 구축사
+   VIEW: 구축 파트
 ───────────────────────────────────────────── */
 function WebAgencyView() {
   const phaseOrder = ["PM", "AY", "DE", "IM", "TE", "OP"];
   return (
     <div>
-      <PageHeader title="구축사" description="프로젝트 설계 · 개발 · 테스트 전 단계 현황" />
+      <PageHeader title="구축 파트" description="프로젝트 설계 · 개발 · 테스트 전 단계 현황" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 20 }}>
         {[
           { label: "진행 중 프로젝트",  value: "5",   sub: "건",    accent: T.agency },
@@ -612,14 +612,14 @@ function WebAgencyView() {
 }
 
 /* ─────────────────────────────────────────────
-   VIEW: 운영사
+   VIEW: 운영 파트
 ───────────────────────────────────────────── */
 function OperationsView() {
   const severityBadge = { 높음: "destructive", 보통: "warn", 낮음: "secondary" };
   const statusBadge   = { 조사중: "warn", 수정완료: "success", 대기: "secondary" };
   return (
     <div>
-      <PageHeader title="운영사" description="서비스 운영 · 장애 대응 · 성과 분석" />
+      <PageHeader title="운영 파트" description="서비스 운영 · 장애 대응 · 성과 분석" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 20 }}>
         {[
           { label: "운영 서비스",    value: "3",      sub: "사이트", accent: T.ops },
@@ -785,7 +785,7 @@ function WeeklyReportView() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         <Card>
-          <CardHeader><CardTitle>구축사 KPI</CardTitle></CardHeader>
+          <CardHeader><CardTitle>구축 파트 KPI</CardTitle></CardHeader>
           <CardContent style={{ padding: 0, paddingBottom: 0 }}>
             <DataTable
               headers={["지표", "실적", "목표", "결과"]}
@@ -799,7 +799,7 @@ function WeeklyReportView() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>제안사 KPI</CardTitle></CardHeader>
+          <CardHeader><CardTitle>제안 파트 KPI</CardTitle></CardHeader>
           <CardContent style={{ padding: 0, paddingBottom: 0 }}>
             <DataTable
               headers={["지표", "실적", "목표", "결과"]}
@@ -990,9 +990,9 @@ const NAV_GROUPS = [
   {
     label: "자회사",
     items: [
-      { id: "proposal",  label: "제안사",     color: T.proposal,  view: ProposalView },
-      { id: "webagency", label: "구축사",     color: T.agency,    view: WebAgencyView },
-      { id: "ops",       label: "운영사",     color: T.ops,       view: OperationsView },
+      { id: "proposal",  label: "제안 파트",     color: T.proposal,  view: ProposalView },
+      { id: "webagency", label: "구축 파트",     color: T.agency,    view: WebAgencyView },
+      { id: "ops",       label: "운영 파트",     color: T.ops,       view: OperationsView },
       { id: "lab",       label: "연구소",     color: T.lab,       view: ResearchView },
     ],
   },

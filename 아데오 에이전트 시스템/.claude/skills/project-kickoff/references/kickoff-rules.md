@@ -1,5 +1,108 @@
 # 착수 문서 작성 규칙
 
+## 스프레드시트 출력 규칙 (Google Sheets 전용)
+
+> WBS(PM-03)는 Excel로 작성하지 않는다. 반드시 Google Sheets(Google Drive)에서 작업한다.  
+> Google Sheets MCP가 없는 경우 Google Apps Script를 생성하여 제공한다.
+
+### WBS Apps Script 생성 규칙
+
+#### 완성 스크립트 구조
+
+```javascript
+function createWBS() {
+  var projectName = "{프로젝트명}";
+  var clientName  = "{고객사명}";
+  var deadline    = "{YYYY-MM-DD}";
+
+  // ── 스프레드시트 생성 ──────────────────────────────────────
+  var ss = SpreadsheetApp.create("WBS_" + projectName + "_" + Utilities.formatDate(new Date(), "Asia/Seoul", "yyyyMMdd"));
+  ss.setSpreadsheetLocale("ko");
+  ss.setSpreadsheetTimeZone("Asia/Seoul");
+
+  buildWBSSheet(ss, projectName, clientName);
+  buildMilestoneSheet(ss, projectName);
+  buildDeliverableSheet(ss);
+  buildRiskSheet(ss);
+
+  // 기본 Sheet1 제거
+  var defaultSheet = ss.getSheetByName("시트1") || ss.getSheetByName("Sheet1");
+  if (defaultSheet) ss.deleteSheet(defaultSheet);
+
+  Logger.log("✅ WBS 생성 완료: " + ss.getUrl());
+  SpreadsheetApp.getUi().alert("WBS 생성 완료!\n" + ss.getUrl());
+}
+```
+
+#### WBS 시트 컬럼 구조
+
+| 컬럼 | A | B | C | D | E | F | G | H | I | J | K |
+|------|---|---|---|---|---|---|---|---|---|---|---|
+| 헤더 | 단계 | 코드 | 대분류 | 중분류 | 담당팀 | 산출물코드 | 산출물명 | 시작일 | 종료일 | 기간(일) | 상태 |
+| 예시 | PM | PM-01 | 착수 | 프로젝트 착수보고 | PM팀 | PM-01 | 착수보고서 | 2026-05-01 | 2026-05-05 | =I2-H2+1 | 진행예정 |
+
+**수식 규칙**:
+- 기간(일) 컬럼: `=NETWORKDAYS(H{row}, I{row})` (영업일 기준)
+- 상태 컬럼 드롭다운: `진행예정 / 진행중 / 완료 / 지연`
+- 날짜 셀 형식: `yyyy-MM-dd`
+
+#### 마일스톤 시트 구조
+
+| 컬럼 | A | B | C | D | E | F…(날짜 컬럼) |
+|------|---|---|---|---|---|---|
+| 헤더 | 단계 | 가중치 | 시작일 | 종료일 | 기간 | 간트 바 (조건부 서식) |
+
+**간트 차트 규칙**:
+- F열부터 날짜 헤더 (프로젝트 시작일 ~ 납기일, 주 단위)
+- 조건부 서식: `=AND(F$1>=$C2, F$1<=$D2)` → 단계별 배경색 적용
+
+#### 열 너비 기준
+
+| 컬럼 | 너비(px) |
+|------|---------|
+| 단계 (A) | 80 |
+| 코드 (B) | 70 |
+| 대분류 (C) | 90 |
+| 중분류 (D) | 200 |
+| 담당팀 (E) | 90 |
+| 산출물코드 (F) | 90 |
+| 산출물명 (G) | 200 |
+| 시작일 (H) | 100 |
+| 종료일 (I) | 100 |
+| 기간 (J) | 70 |
+| 상태 (K) | 80 |
+
+#### 헤더 행 서식
+
+| 항목 | 값 |
+|------|---|
+| 배경색 | `#1F2937` |
+| 텍스트 색 | `#FFFFFF` |
+| 폰트 크기 | 11pt |
+| 굵기 | Bold |
+| 정렬 | 가운데 |
+| 행 고정 | 1행 고정 (freezeRows) |
+| 필터 | 전체 헤더에 필터 적용 |
+
+#### Apps Script 실행 안내 텍스트 (항상 포함)
+
+스크립트 출력 후 반드시 아래 안내문을 함께 출력한다:
+
+```
+[WBS Google Sheets 생성 방법]
+──────────────────────────────────────────────────────
+① Google Drive (drive.google.com) 접속
+② 우상단 [+ 새로 만들기] → [더보기] → [Google Apps Script] 클릭
+③ 프로젝트 제목을 "WBS_{프로젝트명}"으로 변경
+④ 기존 코드를 모두 지우고 아래 스크립트를 붙여넣기
+⑤ 상단 [▶ 실행] 클릭 → 함수 선택창에서 createWBS 선택
+⑥ Google 계정 권한 허용 (스프레드시트 생성 권한)
+⑦ 실행 완료 후 Google Drive에서 WBS 파일 확인
+──────────────────────────────────────────────────────
+```
+
+---
+
 ## 마일스톤 일정 계산 규칙
 
 ### 6단계 기간 배분 (납기일 기준 역산)

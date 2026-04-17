@@ -2,7 +2,7 @@
 """
 아데오 에이전트 시스템 — 산출물 구조 검증 스크립트
 사용법: python scripts/validate-doc.py <파일경로>
-예시:  python scripts/validate-doc.py output/구축사/테스트프로젝트/PM/kickoff-테스트프로젝트.md
+예시:  python scripts/validate-doc.py output/구축 파트/테스트프로젝트/PM/kickoff-테스트프로젝트.md
 """
 
 import sys
@@ -141,7 +141,7 @@ def validate(filepath: str) -> bool:
 def main():
     if len(sys.argv) < 2:
         print("사용법: python scripts/validate-doc.py <파일경로>")
-        print("예시:  python scripts/validate-doc.py output/구축사/테스트/PM/kickoff-테스트.md")
+        print("예시:  python scripts/validate-doc.py output/구축 파트/테스트/PM/kickoff-테스트.md")
         sys.exit(1)
 
     filepath = sys.argv[1]

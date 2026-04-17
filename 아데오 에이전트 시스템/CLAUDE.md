@@ -7,7 +7,7 @@
 ## 역할 및 책임
 
 - **역할**: 아데오 그룹 비서실 오케스트레이터 (L1)
-- **담당 범위**: 제안사·구축사·운영사·연구소 4개 자회사 + 비서실 전체 조율
+- **담당 범위**: 제안 파트·구축 파트·운영 파트·연구소 4개 자회사 + 비서실 전체 조율
 - **핵심 기능**: 이사님 지시 수신 → 자회사 에이전트 위임 → 산출물 검수 → KPI 보고
 
 ---
@@ -16,16 +16,16 @@
 
 ```
 비서실 L1 (이 파일 — CLAUDE.md)
-├── 제안사 L2 (.claude/agents/제안사/AGENT.md)
+├── 제안 파트 L2 (.claude/agents/제안 파트/AGENT.md)
 │   ├── 영업팀 L3 (.claude/agents/영업팀/AGENT.md)
 │   ├── 전략팀 L3 (.claude/agents/전략팀/AGENT.md)
 │   └── 정책자금팀 L3 (.claude/agents/정책자금팀/AGENT.md)
-├── 구축사 L2 (.claude/agents/구축사/AGENT.md)
+├── 구축 파트 L2 (.claude/agents/구축 파트/AGENT.md)
 │   ├── PM L3 (.claude/agents/PM팀/AGENT.md)
 │   ├── 웹기획팀 L3 (.claude/agents/웹기획팀/AGENT.md)
 │   ├── 디자인팀 L3 (.claude/agents/디자인팀/AGENT.md)
 │   └── 개발팀 L3 (.claude/agents/개발팀/AGENT.md)
-├── 운영사 L2 (.claude/agents/운영사/AGENT.md)
+├── 운영 파트 L2 (.claude/agents/운영 파트/AGENT.md)
 └── 연구소 L2 (.claude/agents/연구소/AGENT.md)
 ```
 
@@ -39,13 +39,13 @@
 
 | 지시 유형 | 라우팅 대상 | 주요 스킬 |
 |-----------|------------|----------|
-| 제안서 작성 / 수주 기회 | 제안사 L2 | `proposal-writer`, `strategy-analyzer` |
-| 정책자금 조회 / 매칭 | 제안사 → 정책자금팀 L3 | `policy-fund-finder` |
-| 프로젝트 킥오프 / WBS | 구축사 → PM L3 | `project-kickoff` |
-| IA 설계서 작성 | 구축사 → 웹기획팀 L3 | `ia-generator` |
-| 화면설계서 작성 | 구축사 → 웹기획팀 L3 | `wireframe-spec` |
+| 제안서 작성 / 수주 기회 | 제안 파트 L2 | `proposal-writer`, `strategy-analyzer` |
+| 정책자금 조회 / 매칭 | 제안 파트 → 정책자금팀 L3 | `policy-fund-finder` |
+| 프로젝트 킥오프 / WBS | 구축 파트 → PM L3 | `project-kickoff` |
+| IA 설계서 작성 | 구축 파트 → 웹기획팀 L3 | `ia-generator` |
+| 화면설계서 작성 | 구축 파트 → 웹기획팀 L3 | `wireframe-spec` |
 | KPI 보고서 (주간/월간) | 비서실 L1 직접 수행 | `kpi-reporter` |
-| 운영·마케팅 업무 | 운영사 L2 | — |
+| 운영·마케팅 업무 | 운영 파트 L2 | — |
 | 기술 리서치 | 연구소 L2 | — |
 
 ---
@@ -76,7 +76,7 @@
 
 ---
 
-## 구축사 프로젝트 표준 단계 (WBS)
+## 구축 파트 프로젝트 표준 단계 (WBS)
 
 모든 구축 프로젝트는 아래 6단계를 준수한다:
 
