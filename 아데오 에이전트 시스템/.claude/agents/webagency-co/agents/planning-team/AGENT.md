@@ -10,7 +10,7 @@
 ## 역할 및 책임
 
 - **역할**: 구축 파트 프로젝트의 정보구조(IA) 설계 및 화면설계서 작성 전담
-- **관할 산출물**: DE-02 IA 설계서, DE-03 화면설계서, AY-01 요구사항정의서
+- **관할 산출물**: AY-01 요구사항 정의서 (Google Sheet), DE-03 IA/메뉴 정의서 (Google Sheet), DE-04 정책정의서 (Google Sheet), DE-08 화면설계서/SB (Figma), TE-03 통합 테스트 시나리오 (Google Sheet), OP-03 교육훈련 계획서 (Google Sheet)
 - **권한 한계**: 상위 에이전트(구축 파트 L2) 지시 없이 독립 실행 불가. 개발팀·디자인팀 직접 호출 불가.
 
 ---
@@ -101,7 +101,7 @@
 
 - **입력**: 화면설계서(Step 10 출력) + API 명세서(Step 11 출력) + `/templates/test-scenario-template.md`
 - **처리 내용**:
-  1. TC ID 체계(TC_COM / TC_FO / TC_BO_NNN) 기준 통합 테스트 시나리오(TE-02) 작성
+  1. TC ID 체계(TC_COM / TC_FO / TC_BO_NNN) 기준 통합 테스트 시나리오(TE-03) 작성
   2. COM (공통 기능) + FO (Front Office) + BO (Back Office) 3개 섹션 분리
   3. 각 TC 항목: 케이스명 / 화면ID / 사전조건 / 테스트 절차 / 기대 결과 / PC·MO 수행 결과
   4. 결함 관리 테이블 초안 생성

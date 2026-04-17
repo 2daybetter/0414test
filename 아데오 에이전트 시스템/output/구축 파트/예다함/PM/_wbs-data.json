@@ -6,7 +6,7 @@
   "doc_date": "2025-07-01",
   "start_date": "2025-07-01",
   "end_date": "2025-12-31",
-  "author": "PM팀",
+  "author": "PM",
   "reviewer": "이사님",
   "approver": "이사님",
 
@@ -19,21 +19,21 @@
   ],
 
   "stages": [
-    { "code": "PM", "name": "착수",    "weight": "5%",  "start": "2025-07-01", "end": "2025-07-11", "team": "PM팀",    "note": "킥오프 미팅" },
+    { "code": "PM", "name": "착수",    "weight": "5%",  "start": "2025-07-01", "end": "2025-07-11", "team": "PM",    "note": "킥오프 미팅" },
     { "code": "AY", "name": "분석",    "weight": "10%", "start": "2025-07-14", "end": "2025-07-31", "team": "웹기획팀", "note": "현황분석/요구사항" },
     { "code": "DE", "name": "설계",    "weight": "20%", "start": "2025-08-01", "end": "2025-09-05", "team": "전체",    "note": "IA/화면설계/디자인" },
     { "code": "IM", "name": "구현",    "weight": "45%", "start": "2025-09-08", "end": "2025-11-14", "team": "개발팀",  "note": "FO/BO 개발" },
     { "code": "TE", "name": "테스트",  "weight": "10%", "start": "2025-11-17", "end": "2025-12-05", "team": "전체",   "note": "통합 테스트" },
-    { "code": "OP", "name": "오픈",    "weight": "10%", "start": "2025-12-08", "end": "2025-12-31", "team": "PM팀",   "note": "오픈 및 안정화" }
+    { "code": "OP", "name": "오픈",    "weight": "10%", "start": "2025-12-08", "end": "2025-12-31", "team": "PM",   "note": "오픈 및 안정화" }
   ],
 
   "wbs_detail": [
     {
       "stage_code": "PM", "stage_name": "착수", "weight": "5%",
       "items": [
-        { "code": "PM-01", "doc_name": "착수보고서",    "team": "PM팀",    "start": "2025-07-01", "end": "2025-07-04", "progress": "완료", "note": "" },
-        { "code": "PM-02", "doc_name": "인력계획서",    "team": "PM팀",    "start": "2025-07-01", "end": "2025-07-04", "progress": "완료", "note": "" },
-        { "code": "PM-03", "doc_name": "WBS",           "team": "PM팀",    "start": "2025-07-01", "end": "2025-07-11", "progress": "완료", "note": "고객사 승인 필요" }
+        { "code": "PM-01", "doc_name": "사업수행계획서",    "team": "PM",    "start": "2025-07-01", "end": "2025-07-04", "progress": "완료", "note": "" },
+        { "code": "PM-02", "doc_name": "인력계획서",    "team": "PM",    "start": "2025-07-01", "end": "2025-07-04", "progress": "완료", "note": "" },
+        { "code": "PM-03", "doc_name": "WBS",           "team": "PM",    "start": "2025-07-01", "end": "2025-07-11", "progress": "완료", "note": "고객사 승인 필요" }
       ]
     },
     {
@@ -66,14 +66,14 @@
       "items": [
         { "code": "TE-01", "doc_name": "단위 테스트 결과서",  "team": "개발팀",   "start": "2025-11-17", "end": "2025-11-28", "progress": "완료", "note": "" },
         { "code": "TE-02", "doc_name": "통합 테스트 시나리오", "team": "웹기획팀", "start": "2025-11-17", "end": "2025-11-21", "progress": "완료", "note": "" },
-        { "code": "TE-03", "doc_name": "통합 테스트 결과서",  "team": "PM팀",     "start": "2025-11-24", "end": "2025-12-05", "progress": "완료", "note": "" }
+        { "code": "TE-03", "doc_name": "통합 테스트 결과서",  "team": "PM",     "start": "2025-11-24", "end": "2025-12-05", "progress": "완료", "note": "" }
       ]
     },
     {
       "stage_code": "OP", "stage_name": "오픈", "weight": "10%",
       "items": [
-        { "code": "OP-01", "doc_name": "오픈 체크리스트",      "team": "PM팀",   "start": "2025-12-08", "end": "2025-12-12", "progress": "완료", "note": "" },
-        { "code": "OP-05", "doc_name": "프로젝트 완료보고서",   "team": "PM팀",   "start": "2025-12-22", "end": "2025-12-31", "progress": "완료", "note": "" }
+        { "code": "OP-01", "doc_name": "오픈 체크리스트",      "team": "PM",   "start": "2025-12-08", "end": "2025-12-12", "progress": "완료", "note": "" },
+        { "code": "OP-05", "doc_name": "프로젝트 완료보고서",   "team": "PM",   "start": "2025-12-22", "end": "2025-12-31", "progress": "완료", "note": "" }
       ]
     }
   ],
@@ -86,7 +86,7 @@
   ],
 
   "resource_plan": [
-    { "team": "PM팀",    "PM": "1명", "AY": "0명", "DE": "0명", "IM": "1명", "TE": "1명", "OP": "1명" },
+    { "team": "PM",    "PM": "1명", "AY": "0명", "DE": "0명", "IM": "1명", "TE": "1명", "OP": "1명" },
     { "team": "웹기획팀", "PM": "0명", "AY": "1명", "DE": "1명", "IM": "0명", "TE": "1명", "OP": "0명" },
     { "team": "디자인팀", "PM": "0명", "AY": "0명", "DE": "1명", "IM": "1명", "TE": "1명", "OP": "0명" },
     { "team": "개발팀",   "PM": "0명", "AY": "0명", "DE": "1명", "IM": "3명", "TE": "2명", "OP": "1명" }

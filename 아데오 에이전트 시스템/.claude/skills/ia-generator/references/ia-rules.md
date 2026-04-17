@@ -7,6 +7,59 @@
 | FO | FO-N-NN | FO-1-01 | N = 1depth 번호, NN = 화면 순번 (01~99) |
 | BO | BO-N-NN | BO-1-01 | 동일 규칙 적용 |
 
+## 화면 ID 체계
+
+### 형식
+
+```
+{SYS}_{XY}_{NNN}
+```
+
+| 구성 | 자리 | 규칙 |
+|------|------|------|
+| SYS | — | `FO` 또는 `BO` |
+| X | 1자리 대문자 | 1depth 메뉴명의 대표 영문 대문자 1자 |
+| Y | 1자리 대문자 | 2depth 메뉴명의 대표 영문 대문자 1자. 2depth 없으면 `0` |
+| NNN | 3자리 숫자 | 동일 XY 내에서 `001`부터 순차 부여 (팝업·레이어 포함) |
+
+### 약어 네이밍 규칙
+
+- 메뉴명의 핵심 영단어 첫 글자를 대문자로 사용 (HOME→H, COMPANY→C, MY→M)
+- 한글 메뉴명은 영문 의미로 치환 후 첫 글자 사용 (회사소개→Company→C, 고객지원→Support→U)
+- 충돌 시 두 번째 연관 영문자 사용 (H 충돌 → 두 번째 메뉴는 HI, HE 등으로 구분)
+
+### 유일성 규칙
+
+- XY 2자리 조합은 **FO 전체**, **BO 전체**에서 각각 중복되지 않아야 한다
+- 동일 1depth 내 2depth 메뉴끼리도 Y 자리가 달라야 한다
+- 생성 전 전체 XY 목록을 나열하여 충돌 여부를 사전 확인한다
+
+### 약어 예시
+
+| 메뉴명 | 약어 | 메뉴명 | 약어 |
+|--------|------|--------|------|
+| 홈 / Home | H | Vision / 비전 | V |
+| Company / 회사소개 | C | History / 연혁 | I |
+| My / 마이페이지 | M | News / 뉴스 | N |
+| Service / 서비스 | S | Support / 고객지원 | U |
+| Dashboard / 대시보드 | D | Member / 회원관리 | E |
+| Board / 게시판 | B | System / 시스템관리 | Y |
+| Product / 제품 | P | About / 소개 | A |
+| Login / 로그인 | L | Join / 회원가입 | J |
+
+### 예시
+
+| 1depth | 2depth | X | Y | XY | 화면ID |
+|--------|--------|---|---|-----|--------|
+| 홈 (Home) | 없음 | H | 0 | H0 | FO_H0_001 |
+| 회사소개 (Company) | 비전 (Vision) | C | V | CV | FO_CV_001 |
+| 회사소개 (Company) | 연혁 (History→I) | C | I | CI | FO_CI_001 |
+| 회사소개 (Company) | 연혁 | C | I | CI | FO_CI_002 ← 동일 메뉴, 두 번째 화면(팝업) |
+| 뉴스 (News) | 공지사항 (Notice→O) | N | O | NO | FO_NO_001 |
+| 대시보드 (Dashboard) | 없음 | D | 0 | D0 | BO_D0_001 |
+| 회원관리 (mEmbEr→E) | 회원목록 (List→L) | E | L | EL | BO_EL_001 |
+| 시스템관리 (sYstem→Y) | 공통코드 (Code→C) | Y | C | YC | BO_YC_001 |
+
 ## 화면 타입 정의
 
 | Type | 정의 | URL 필요 | SEO 필요 |

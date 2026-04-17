@@ -1,6 +1,6 @@
 ---
 name: ia-generator
-description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬. 요구사항정의서를 입력받아 FO(Front Office)와 BO(Back Office)를 분리한 아데오 표준 IA 설계서(DE-02)를 작성한다. IA_ID(FO-N-NN / BO-N-NN) 체계, 1~3depth 메뉴 계층, Type 분류, URL 설계, SEO 메타 정보, 화면 수 집계표를 포함한다. 트리거: "IA 설계", "정보구조 작성", "ia-generator", "IA 만들어", "사이트 구조 설계", DE-02 산출물 요청, 웹기획팀 에이전트의 Step 9 진입 시 자동 참조.
+description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬. 요구사항정의서를 입력받아 FO(Front Office)와 BO(Back Office)를 분리한 아데오 표준 IA 설계서(DE-02)를 작성한다. IA_ID(FO-N-NN / BO-N-NN) 체계, 화면ID(FO_XY_NNN) 체계, 1~3depth 메뉴 계층, Type 분류, URL 설계, SEO 메타 정보, 화면 수 집계표를 포함하며 Google Sheets로 출력한다. 트리거: "IA 설계", "정보구조 작성", "ia-generator", "IA 만들어", "사이트 구조 설계", DE-02 산출물 요청, 웹기획팀 에이전트의 Step 9 진입 시 자동 참조.
 ---
 
 # ia-generator
@@ -8,7 +8,11 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 ## 개요
 
 요구사항정의서 기반으로 아데오 표준 IA 설계서(DE-02)를 생성한다.  
-반드시 `/templates/ia-template.md` 를 참조하여 작성한다.
+반드시 `/templates/ia-template.md` 와 `references/ia-rules.md` 를 참조하여 작성한다.
+
+**출력 형식 원칙**:
+- **IA 설계서 (DE-02)**: Excel/마크다운 금지 → **Google Sheets** (Google Apps Script로 자동 생성)
+- **화면 목록 인덱스**: 마크다운 (wireframe-spec이 참조하는 화면ID 매핑표)
 
 ---
 
@@ -24,10 +28,9 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 | 프로젝트명 | 파일명에서 추출 |
 | IA 템플릿 | `/templates/ia-template.md` 존재 여부 |
 
-### Step 2: 템플릿 로드
+### Step 2: 템플릿 및 규칙 로드
 
-`/templates/ia-template.md` 를 읽어 출력 구조를 확인한다.  
-세부 설계 규칙은 `references/ia-rules.md` 를 참조한다.
+`/templates/ia-template.md` 와 `references/ia-rules.md` 를 읽어 구조 및 화면ID 규칙을 확인한다.
 
 ### Step 3: FO IA 설계
 
@@ -36,19 +39,26 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 3. **[확인 요청]** — 웹기획팀 에이전트가 1depth 구조를 사용자에게 제시하고 승인 대기
 4. 승인 후 2depth ~ 3depth 세부 화면 구조 작성
 5. 각 화면에 IA_ID 부여: `FO-{1depth번호}-{순번}` (예: FO-1-01)
-6. Type 분류: Page / Layer Popup / Popup
-7. Page 타입 전체에 URL 설계 (`/경로/하위경로` 형식, snake_case)
-8. SEO 메타 정의 (Title 30자 이내 / Description 80자 이내 / Keyword 5개 이내)
-9. DB 연동 여부 표시 (O/X)
+6. **화면ID 부여**: `FO_{XY}_{NNN}` 형식 — 규칙은 `references/ia-rules.md` 화면 ID 체계 참조
+   - X = 1depth 메뉴 영문 대문자 약어 1자 (HOME→H, COMPANY→C)
+   - Y = 2depth 메뉴 영문 대문자 약어 1자. 2depth 없으면 `0`
+   - NNN = 동일 XY 내 001부터 순차 (팝업·레이어도 포함하여 순번 증가)
+   - **충돌 검사**: 전체 XY 목록을 나열하여 중복 없음을 확인 후 부여
+7. Type 분류: Page / Layer Popup / Popup
+8. Page 타입 전체에 URL 설계 (`/경로/하위경로` 형식, kebab-case)
+9. SEO 메타 정의 (Title 30자 이내 / Description 80자 이내 / Keyword 5개 이내)
+10. DB 연동 여부 표시 (Y/N)
 
 ### Step 4: BO IA 설계
 
 1. FO 기능 목록 기반 관리 기능 도출
 2. BO 1depth 메뉴 구성 (최소 2개 — 콘텐츠관리, 회원관리 등)
 3. 각 화면에 IA_ID 부여: `BO-{1depth번호}-{순번}` (예: BO-1-01)
-4. Type 분류 (Page / Layer Popup / Popup)
-5. URL 설계 (`/admin/경로` 형식)
-6. SEO 미적용 (BO는 SEO 불필요)
+4. **화면ID 부여**: `BO_{XY}_{NNN}` 형식 — FO와 동일한 약어 규칙 적용
+   - BO 전체에서 XY 중복 없음을 별도 확인 (FO와는 독립적)
+5. Type 분류 (Page / Layer Popup / Popup)
+6. URL 설계 (`/admin/경로` 형식)
+7. SEO 미적용 (BO는 SEO 불필요)
 
 ### Step 5: 화면 수 집계표 생성
 
@@ -60,17 +70,115 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 | 합계 |      |             |       |      |
 ```
 
-### Step 6: 출력 및 검증
+### Step 6: Google Apps Script 생성 (DE-02)
+
+설계된 FO/BO IA 전체 데이터로 Google Sheets 생성 스크립트를 작성한다.
+
+#### 스크립트 생성 규칙
+
+1. **파일명**: `IA_{프로젝트명}_{YYYYMMDD}`
+2. **시트 구성**:
+   - `FO_IA` 시트: FO 전체 화면 목록 (IA_ID / 1depth / 1depth약어 / 2depth / 2depth약어 / XY / 3depth / Type / DB / 화면ID / 기능정의 / URL / SEO Title / SEO Description / SEO Keyword)
+   - `BO_IA` 시트: BO 전체 화면 목록 (IA_ID / 1depth / 1depth약어 / 2depth / 2depth약어 / XY / 3depth / Type / DB / 화면ID / 기능정의 / URL)
+   - `화면목록` 시트: FO+BO 통합 화면ID 인덱스 (시스템 / 화면ID / 화면명 / URL / Type / 기능정의)
+   - `집계` 시트: 화면 수 집계표 (구분 / Page / Layer Popup / Popup / 합계)
+3. **셀 서식**: FO/BO 구분 색상 코딩
+4. **헤더 고정**: 1행 고정 + 열 너비 자동 조정
+
+#### 색상 코딩
+
+| 구분 | 헤더 배경 | 행 배경 | 텍스트 |
+|------|---------|--------|-------|
+| FO 헤더 행 | `#1A56DB` | — | `#FFFFFF` |
+| FO 데이터 행 | — | `#EBF5FF` | `#1E3A5F` |
+| BO 헤더 행 | `#057A55` | — | `#FFFFFF` |
+| BO 데이터 행 | — | `#E6F4EA` | `#1B5E20` |
+| 화면목록 헤더 | `#1F2937` | — | `#FFFFFF` |
+
+#### 출력 스크립트 예시 구조
+
+```javascript
+function createIA() {
+  var ss = SpreadsheetApp.create("IA_{프로젝트명}_{YYYYMMDD}");
+
+  // FO_IA 시트
+  var foSheet = ss.getSheets()[0];
+  foSheet.setName("FO_IA");
+  // 헤더 + 색상 + FO 화면 데이터 전체 입력
+
+  // BO_IA 시트
+  var boSheet = ss.insertSheet("BO_IA");
+  // 헤더 + 색상 + BO 화면 데이터 전체 입력
+
+  // 화면목록 시트 (FO+BO 통합)
+  var listSheet = ss.insertSheet("화면목록");
+
+  // 집계 시트
+  var summarySheet = ss.insertSheet("집계");
+
+  Logger.log("IA 생성 완료: " + ss.getUrl());
+}
+```
+
+실제 생성 시에는 설계된 모든 화면 데이터가 채워진 완전한 스크립트를 생성한다.
+
+### Step 7: Apps Script 실행 안내
+
+스크립트 생성 후 다음 실행 방법을 함께 제공한다:
+
+```
+[IA Google Sheets 생성 방법]
+──────────────────────────────────────
+1. Google Drive (drive.google.com) 접속
+2. 새로 만들기 → Google Apps Script 클릭
+3. 프로젝트명: "IA_{프로젝트명}" 입력
+4. 아래 스크립트 코드를 에디터에 붙여넣기
+5. ▶ 실행 (createIA 함수) 클릭
+6. Google 계정 권한 허용
+7. 실행 완료 후 Drive에서 생성된 스프레드시트 확인
+──────────────────────────────────────
+```
+
+### Step 8: 화면 목록 인덱스 저장 (마크다운)
+
+wireframe-spec이 참조할 화면ID 매핑 인덱스를 마크다운으로 저장한다.
 
 - **출력 경로**: `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.md`
-- **검증**: `scripts/validate-doc.py` 실행
-- **성공 기준**: FO/BO 분리 + 1depth 4개 이상 + 집계표 + Page 타입 전체 URL 존재
+
+인덱스 파일 내용:
+```markdown
+# DE-02 IA 설계서 — {프로젝트명}
+
+- 버전: v1.0
+- 작성일: {YYYY-MM-DD}
+- Google Sheets: [{IA_프로젝트명}]({Google Sheets URL — 실행 후 기입})
+
+## FO 화면 목록
+
+| 화면ID | 화면명 | XY | 1depth | 2depth | Type | URL |
+|--------|--------|-----|--------|--------|------|-----|
+| FO_H0_001 | 메인 페이지 | H0 | 홈 | | Page | / |
+| FO_CV_001 | ... | CV | ... | ... | ... | ... |
+
+## BO 화면 목록
+
+| 화면ID | 화면명 | XY | 1depth | 2depth | Type | URL |
+|--------|--------|-----|--------|--------|------|-----|
+| BO_D0_001 | 대시보드 | D0 | 대시보드 | | Page | /admin |
+```
+
+### Step 9: 검증
+
+- **성공 기준**: FO 1depth 4개 이상 + XY 전체 중복 없음 + Page 타입 전체 URL 존재 + 집계표 정확 + `.gs` 스크립트 완성
 
 ---
 
-## 출력 형식
+## 출력 파일 목록
 
-`references/ia-output-format.md` 참조.
+| 산출물 | 형식 | 경로 |
+|--------|------|------|
+| DE-02 IA Google Apps Script | `.gs` | `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.gs` |
+| 화면 목록 인덱스 | Markdown | `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.md` |
 
 ---
 
@@ -80,4 +188,5 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 |---------|------|
 | 요구사항정의서 없음 | 실패 리포트 생성 후 중단 |
 | 1depth 4개 미만 도출 | 재시도 1회 후 에스컬레이션 |
-| validate-doc.py 실패 | 자동 재시도 최대 2회 후 에스컬레이션 |
+| XY 충돌 발생 | 충돌 메뉴 목록 명시 후 약어 재조정 |
+| Apps Script 생성 오류 | 재시도 1회 후 에스컬레이션 |

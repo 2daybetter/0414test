@@ -30,7 +30,7 @@ RULES = {
             r"\d{4}-\d{2}-\d{2}",             # 날짜 존재
         ],
         "min_lines": 40,
-        "description": "WBS + 착수보고서 패키지 (PM-01~03)",
+        "description": "WBS + 사업수행계획서 패키지 (PM-01~03)",
     },
 
     # DE-02 IA 설계서

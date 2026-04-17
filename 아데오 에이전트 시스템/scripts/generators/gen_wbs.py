@@ -27,7 +27,7 @@ def build_cover_sheet(wb, d):
     # 상단 로고 영역 — 먼저 배경색 채우고(병합 없이), 텍스트 셀만 병합
     fill_range(ws, 1, 1, 3, 7, FILL_NAVY)
     merge_write(ws, 2, 2, 2, 3, "ADEO GROUP", font=fnt(22, True, C_WHITE), fill=FILL_NAVY, alignment=ALIGN_LEFT)
-    merge_write(ws, 2, 4, 2, 7, "프로젝트 착수 보고서", font=fnt(14, False, "A0C4E8"), fill=FILL_NAVY, alignment=Alignment(horizontal="right", vertical="center"))
+    merge_write(ws, 2, 4, 2, 7, "프로젝트 사업수행계획서", font=fnt(14, False, "A0C4E8"), fill=FILL_NAVY, alignment=Alignment(horizontal="right", vertical="center"))
     for r in range(1, 4):
         set_row_height(ws, r, 22)
 
@@ -48,7 +48,7 @@ def build_cover_sheet(wb, d):
         ("작성일", d.get("doc_date", datetime.today().strftime("%Y-%m-%d"))),
         ("고객사", d["client_name"]),
         ("계약 기간", f"{d['start_date']} ~ {d['end_date']}"),
-        ("작성자", d.get("author", "PM팀")),
+        ("작성자", d.get("author", "PM")),
         ("검토자", d.get("reviewer", "이사님")),
         ("승인자", d.get("approver", "이사님")),
     ]

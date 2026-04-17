@@ -1,6 +1,6 @@
 ---
 name: project-kickoff
-description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 Google Sheets(Google Drive)로, 착수보고서(PM-01)·인력계획서(PM-02)를 마크다운으로 작성한다. WBS는 Google Apps Script를 생성하여 Google Drive에서 스프레드시트로 실행할 수 있도록 한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "착수보고서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
+description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 Google Sheets(Google Drive)로, 사업수행계획서(PM-01)·인력계획서(PM-02)를 마크다운으로 작성한다. WBS는 Google Apps Script를 생성하여 Google Drive에서 스프레드시트로 실행할 수 있도록 한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "사업수행계획서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
 ---
 
 # project-kickoff
@@ -11,8 +11,8 @@ description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬.
 
 **출력 형식 원칙**:
 - **WBS (PM-03)**: Excel 금지 → **Google Sheets** (Google Apps Script로 자동 생성)
-- **착수보고서 (PM-01)**: 마크다운 문서
-- **인력계획서 (PM-02)**: 마크다운 문서
+- **사업수행계획서 (PM-01)**: Figma 파일 (Figma MCP 사용)
+- **완료보고서 (PM-02)**: Figma 파일 (Figma MCP 사용)
 
 반드시 `/templates/kickoff-template.md` 를 참조하여 내용을 구성한다.
 
@@ -141,7 +141,7 @@ function createWBS() {
 
 ---
 
-### Step 5: 착수보고서 작성 (PM-01)
+### Step 5: 사업수행계획서 작성 (PM-01)
 
 마크다운 형식으로 작성한다.
 
@@ -174,13 +174,13 @@ function createWBS() {
 | 산출물 | 형식 | 경로 |
 |--------|------|------|
 | PM-03 WBS | Google Apps Script (.gs) | `/output/구축 파트/{프로젝트명}/PM/wbs-{프로젝트명}.gs` |
-| PM-01 착수보고서 | Markdown | `/output/구축 파트/{프로젝트명}/PM/kickoff-{프로젝트명}.md` |
-| PM-02 인력계획서 | Markdown | `/output/구축 파트/{프로젝트명}/PM/staffing-{프로젝트명}.md` |
+| PM-01 사업수행계획서 | Figma (Figma MCP) | Figma 파일 링크 제공 |
+| PM-02 완료보고서 | Figma (Figma MCP) | Figma 파일 링크 제공 |
 
 **성공 기준**:
 - WBS Apps Script: PM/AY/DE/IM/TE/OP 6단계 데이터 + 4개 시트 구성 + 납기일 반영
-- 착수보고서: 프로젝트 개요 + 조직 + 마일스톤 + 산출물 계획 섹션 존재
-- 인력계획서: 팀 구성 + 단계별 투입 섹션 존재
+- 사업수행계획서: Figma에 프로젝트 개요 + 조직 + 마일스톤 + 산출물 계획 섹션 존재
+- 완료보고서: Figma에 팀 구성 + 단계별 투입 섹션 존재
 
 ---
 
