@@ -115,16 +115,25 @@ Frame (FO-N-NN 화면명)
 - 메인(홈) 페이지: 히어로 배너 + 주요 섹션(최소 3개)
 - 기타: IA 기능 요약 기반으로 적절히 구성
 
-**Figma 컴포넌트 스타일 기준**:
+**Figma 컴포넌트 스타일 기준 (KRDS v1.0.0)**:
+
+> 상세 토큰: `/templates/krds-design-system.md`
+
 | 요소 | 스타일 |
 |------|------|
-| 텍스트 | Pretendard, 제목 24px Bold / 본문 16px Regular / 설명 14px Regular |
-| Primary 버튼 | Fill #1A56DB, 텍스트 #FFFFFF, Radius 8px, Padding 12×24px |
-| Secondary 버튼 | Stroke #1A56DB 1px, 텍스트 #1A56DB, Radius 8px |
-| 입력 필드 | Stroke #D1D5DB 1px, Radius 6px, Height 48px |
-| 카드 | Fill #FFFFFF, Shadow 0 2px 8px rgba(0,0,0,0.08), Radius 12px, Padding 24px |
-| 구분선 | Stroke #E5E7EB 1px |
-| 배경(섹션) | #F9FAFB |
+| 폰트 | Pretendard GOV (대체: Pretendard Variable) |
+| 기본 본문 | 17px Regular, Line Height 160%, Color `#1A1E2B` |
+| 제목 H2 | 32px Bold / H3 24px Bold / H4 20px SemiBold |
+| 보조 텍스트 | 15px Regular, Color `#6B7280` |
+| Primary 버튼 | Fill `#256EF4`, 텍스트 `#FFFFFF`, Radius 4px, Padding 12×24px, Height 48px |
+| Primary Hover | Fill `#0B50D0` |
+| Secondary 버튼 | Stroke `#256EF4` 1px, 텍스트 `#256EF4`, Radius 4px, Height 48px |
+| 입력 필드 | Stroke `#E0E2EA` 1px, Radius 4px, Height 48px, Focus `#256EF4` 2px |
+| 카드 | Fill `#FFFFFF`, Border `#E0E2EA` 1px, Shadow 0 2px 8px rgba(0,0,0,0.06), Radius 8px, Padding 24px |
+| 구분선 | Stroke `#E0E2EA` 1px |
+| 배경(섹션) | `#F7F8FA` |
+| 배경(페이지) | `#FFFFFF` |
+| 배지 Primary | Fill `#EBF1FF`, 텍스트 `#256EF4`, Radius 999px |
 
 ---
 

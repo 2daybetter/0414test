@@ -38,10 +38,11 @@
   1. 고객사 브랜드 자산(로고, CI, 컬러) 분석
   2. **[확인 요청]** 메인 컬러(Primary/Secondary/Neutral) 및 타이포그래피(폰트/크기 체계) 방향 안 제시 후 승인 대기
   3. 승인 후 디자인 시스템 작성:
-     - **컬러 시스템**: Primary / Secondary / Neutral / Semantic(Success/Warning/Error) 컬러 팔레트
-     - **타이포그래피**: 폰트 패밀리, 웨이트, 크기 체계 (H1~H6, Body, Caption)
-     - **스페이싱/그리드**: 8px 기반 스페이싱 토큰, PC/Tablet/Mobile 그리드 정의
-     - **컴포넌트 규격**: 버튼(Primary/Secondary/Disabled), 인풋, 카드, 모달, 태그 등 핵심 UI 컴포넌트
+     - **기본 토큰**: `/templates/krds-design-system.md` 참조 — KRDS v1.0.0을 베이스로 사용
+     - **컬러 시스템**: Primary(`#256EF4` 또는 고객사 브랜드 컬러) / Neutral / Semantic(Success/Warning/Danger)
+     - **타이포그래피**: Pretendard GOV, 본문 17px, H2 32px Bold 기준 — KRDS 스케일 유지
+     - **스페이싱/그리드**: 8px 기반 스페이싱 토큰, PC(12col)/Tablet(8col)/Mobile(4col) 그리드
+     - **컴포넌트 규격**: 버튼(Primary/Secondary/Disabled), 인풋(Height 48px), 카드(Radius 8px), 모달, 태그 등
      - **아이콘 시스템**: 아이콘 라이브러리 출처 + 커스텀 아이콘 명세
      - **이미지 가이드**: 비율 기준, 포맷, 최소/최대 크기
   4. 화면설계서의 ASCII 레이아웃과 컴포넌트 규격 정합성 자기 검증
@@ -77,14 +78,14 @@
 프로젝트: {프로젝트명}
 
 컬러 시스템 (안):
-  Primary   : {HEX} — 메인 CTA, 브랜드 강조
-  Secondary : {HEX} — 보조 강조, 배경
-  Neutral   : #F5F5F5 / #333333 (Light/Dark)
-  Semantic  : Success #2ECC71 / Warning #F39C12 / Error #E74C3C
+  Primary   : {HEX} (기본 KRDS #256EF4) — 메인 CTA, 브랜드 강조
+  Primary Dk: {HEX} (기본 KRDS #0B50D0) — Hover / Active
+  Neutral   : #F7F8FA / #1A1E2B (BG/Text, KRDS 기준)
+  Semantic  : Success #1B7F3E / Warning #C45000 / Danger #C40A0A
 
 타이포그래피 (안):
-  폰트: {폰트명} (예: Pretendard Variable)
-  H1: 40px / Bold | H2: 32px / SemiBold | Body: 16px / Regular
+  폰트: Pretendard GOV (대체: Pretendard Variable) — KRDS 표준
+  H1: 40px / Bold | H2: 32px / Bold | Body: 17px / Regular | Line Height: 160%
 
 위 방향으로 진행하겠습니다. 수정이 필요하면 알려주세요.
 승인 시 "확인" 또는 수정 내용을 입력해주세요.

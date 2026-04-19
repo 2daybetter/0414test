@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.yedaham.co.kr)"
+      "WebFetch(domain:www.yedaham.co.kr)",
+      "WebFetch(domain:bworld.co.kr)",
+      "WebFetch(domain:www.bworld.co.kr)",
+      "mcp__claude_ai_Figma__create_new_file",
+      "mcp__claude_ai_Figma__use_figma",
+      "mcp__claude_ai_Google_Drive__create_file",
+      "WebSearch",
+      "WebFetch(domain:www.krds.go.kr)",
+      "WebFetch(domain:github.com)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\LG\\Documents\\Claude\\Projects\\아데오 에이전트 시스템\\output\\제안 파트\\bworld리뉴얼"
     ]
   }
 }

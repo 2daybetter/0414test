@@ -50,6 +50,48 @@
 
 ---
 
+## 디자인 시스템 표준 (KRDS v1.0.0)
+
+모든 Figma 산출물·HTML·대시보드·Google Apps Script 스타일링에 **KRDS v1.0.0**을 기본 디자인 시스템으로 사용한다.
+
+> 레퍼런스: `/templates/krds-design-system.md`  
+> 공식 사이트: https://www.krds.go.kr
+
+### 핵심 토큰 (빠른 참조)
+
+| 항목 | 값 |
+|------|---|
+| **Primary Color** | `#256EF4` (정부 블루) |
+| Primary Dark (Hover/Active) | `#0B50D0` |
+| 기본 텍스트 | `#1A1E2B` |
+| 보조 텍스트 | `#6B7280` |
+| 기본 배경 | `#FFFFFF` |
+| 서브 배경 | `#F7F8FA` |
+| 테두리 | `#E0E2EA` |
+| Success | `#1B7F3E` |
+| Warning | `#C45000` |
+| Danger | `#C40A0A` |
+| **폰트** | Pretendard GOV (대체: Pretendard Variable) |
+| **기본 본문 크기** | **17px** (16px 아님) |
+| 제목 Weight | 700 (Bold) |
+| 본문 Line Height | 160% |
+| 스페이싱 기준 | 8px 그리드 |
+| 버튼 최소 높이 | 48px (터치 44px) |
+| 카드 Radius | 8px |
+| 버튼 Radius | 4px |
+
+### 산출물 유형별 적용 기준
+
+| 산출물 | 적용 방법 |
+|--------|---------|
+| Figma (PR-01, DE-08, IM-01 등) | KRDS 색상 팔레트 + 타이포/스페이싱 토큰 직접 적용 |
+| Google Apps Script (GS 산출물) | `krds-design-system.md` §8의 GAS 상수 사용 |
+| HTML 대시보드 | `krds-design-system.md` §8의 CSS 변수 블록 삽입 |
+
+> **예외**: 고객사 브랜드 가이드가 존재하는 경우, 고객사 Primary Color를 `#256EF4` 자리에 대체하되 나머지 토큰(타이포·스페이싱·Neutral·Semantic)은 KRDS 기준 유지.
+
+---
+
 ## 문서 표준 규칙
 
 ### 모든 산출물에 적용
@@ -69,10 +111,11 @@
 | IA / 메뉴 정의서 | `/templates/ia-template.md` | DE-03 |
 | 화면설계서 (SB) | `/templates/wireframe-template.md` | DE-08 |
 | 통합 테스트 시나리오 | `/templates/test-scenario-template.md` | TE-03 |
-| 제안서 | `/templates/proposal-template.md` | PR-01 |
-| 정책자금 사업제안서 | `/templates/policy-fund-template.md` | PR-02 |
+| 제안서 | `/templates/proposal-template.md` | PR-01 (Figma 프리젠테이션 출력) |
+| 정책자금 사업제안서 | `/templates/policy-fund-template.md` | PR-02 (Figma 프리젠테이션 출력) |
 | 주간 보고서 | `/templates/weekly-report-template.md` | PM-WR |
 | 월간 보고서 | `/templates/monthly-report-template.md` | PM-MR |
+| **KRDS 디자인 시스템** | `/templates/krds-design-system.md` | — (모든 시각 산출물 공통 참조) |
 
 ---
 
@@ -95,7 +138,7 @@
 
 | 출력 도구 | 해당 산출물 코드 |
 |-----------|----------------|
-| **Figma** (Figma MCP 사용) | PM-01, PM-02, DE-01, DE-02, DE-08, IM-01, IM-02, OP-04 |
+| **Figma** (Figma MCP 사용) | PM-01, PM-02, DE-01, DE-02, DE-08, IM-01, IM-02, OP-04, **PR-01, PR-02** |
 | **Google Sheet** (Google Apps Script 생성) | PM-03, AY-01, DE-03, DE-04, DE-05, DE-06, DE-07, IM-03, TE-01~08, OP-01~03, OP-05 |
 | **GitHub** (저장소 링크 제공) | IM-04 |
 
