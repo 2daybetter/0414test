@@ -22,7 +22,7 @@
 
 | 트리거 | 설명 |
 |--------|------|
-| 제안 파트 → 구축 파트 인계 이벤트 | Google Drive 아데오 프로젝트/{기회명}/.status/.handover 파일 생성 감지 (제안 파트 L2가 mcp__claude_ai_Google_Drive__create_file로 생성) |
+| 제안 파트 → 구축 파트 인계 이벤트 | Google Drive 아데오 프로젝트/{프로젝트명}/.status/.handover 파일 생성 감지 (제안 파트 L2가 mcp__claude_ai_Google_Drive__create_file로 생성) |
 | 비서실 L1의 직접 위임 | "프로젝트 킥오프", "구축 시작" 등 지시 수신 |
 
 ---
@@ -78,7 +78,7 @@ outputs:
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: WBS 문서 + 고객사 요구사항 + 벤치마킹 대상 URL
 - **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.requirements` URL 존재 확인
-- **다음 단계 조건**: `outputs.requirements` URL 존재 + validate-doc.py 통과
+- **다음 단계 조건**: `outputs.requirements` URL 존재 + validate-doc.py 통과 (`mcp__claude_ai_Google_Drive__read_file_content`로 읽은 내용을 `--stdin --doc-type 요구사항정의서` 옵션으로 검증)
 
 ---
 
@@ -87,7 +87,7 @@ outputs:
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: 요구사항정의서
 - **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.ia` URL 존재 확인
-- **다음 단계 조건**: `outputs.ia` URL 존재 + validate-doc.py 통과 (1depth 확인을 위한 대기 없음)
+- **다음 단계 조건**: `outputs.ia` URL 존재 + validate-doc.py 통과 (`--stdin --doc-type ia-` 옵션으로 Drive 내용 검증, 1depth 확인을 위한 대기 없음)
 
 ---
 

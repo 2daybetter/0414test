@@ -24,7 +24,7 @@
 
 고객사 URL과 RFP 문서가 함께 제공된 경우 Step A-1 이전에 `rfp-analyzer` 스킬을 먼저 실행한다.
 
-- rfp-context 생성 후 Google Drive 아데오 프로젝트/{기회명}/.status/.status 파일의 `outputs.rfp-context`에 URL 기록
+- rfp-context 생성 후 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.rfp-context`에 URL 기록
 - 완료 후 제안 파트 L2에 보고, 이후 Step A-1부터 rfp-context를 입력으로 사용
 
 URL 또는 RFP 중 하나만 제공된 경우 이 단계를 건너뛰고 Step A-1 진행.
@@ -35,7 +35,7 @@ URL 또는 RFP 중 하나만 제공된 경우 이 단계를 건너뛰고 Step A-
 |---------|---------|
 | 고객사 RFP 문서 | 파일 경로 또는 텍스트 업로드 시 |
 | 나라장터 입찰공고 | https://www.g2b.go.kr/ '홈페이지' 키워드 조회 |
-| 기회명 / 고객사명 | RFP에서 추출 또는 입력 |
+| 프로젝트명 / 고객사명 | RFP에서 추출 또는 입력 |
 | 입찰 기한 | rfp-context.md에서 자동 추출. 없으면 "미정"으로 처리하고 계속 진행 |
 
 ### Step A-2: 기회 분석
@@ -54,7 +54,7 @@ URL 또는 RFP 중 하나만 제공된 경우 이 단계를 건너뛰고 Step A-
 
 ### Step A-3: 출력 및 저장
 
-- **출력 방법**: 내용 작성 후 `mcp__claude_ai_Google_Drive__create_file`로 업로드 → 반환된 URL을 Google Drive 아데오 프로젝트/{기회명}/.status/.status 파일의 `outputs.opportunity-analysis`에 기록
+- **출력 방법**: 내용 작성 후 `mcp__claude_ai_Google_Drive__create_file`로 업로드 → 반환된 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.opportunity-analysis`에 기록
 - **구글 드라이브**: 제안 목록 스프레드시트에 해당 건 추가 — 매일 9시 자동 업데이트
 - **검증**: validate-doc.py 실행 (`기회분석` 유형)
 - **완료 후**: 제안 파트 L2에 완료 보고, `.status` 파일 업데이트

@@ -45,7 +45,7 @@
 [입력: 고객사 URL + RFP 문서]
         ↓
 [Step 0: rfp-analyzer 스킬 실행 — 영업팀 L3 담당]
-  → rfp-context를 Google Drive MCP로 업로드 → URL을 Google Drive 아데오 프로젝트/{기회명}/.status/.status 파일의 outputs.rfp-context 에 기록 (mcp__claude_ai_Google_Drive__create_file, 루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
+  → rfp-context를 Google Drive MCP로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 outputs.rfp-context 에 기록 (mcp__claude_ai_Google_Drive__create_file, 루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
         ↓
 [제안 파트 자동 실행 — proposal-co L2]
   Step A: 기회 분석서 자동 생성 (rfp-context.md 기반)
@@ -210,11 +210,13 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 
 ### 파일 생성 원칙
 
-1. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
-2. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
-3. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
-4. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 Google Drive 아데오 프로젝트/{프로젝트명}/.status 폴더의 `.status` 파일 (루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM) `outputs:` 섹션에 Drive/Figma URL을 기록한다 (쓰기: mcp__claude_ai_Google_Drive__create_file, 읽기: mcp__claude_ai_Google_Drive__read_file_content). 하위 에이전트는 이 URL을 입력으로 사용한다.
-5. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
+1. **프로젝트 파일은 Google Drive 전용**: `spec-*.md`, `blueprint-*.md` 등 모든 프로젝트 파일은 Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로만 생성한다. 로컬 파일시스템(시스템 루트 포함 어느 경로도)에 생성 금지.
+
+3. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
+4. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
+5. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
+6. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 Google Drive 아데오 프로젝트/{프로젝트명}/.status 폴더의 `.status` 파일 (루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM) `outputs:` 섹션에 Drive/Figma URL을 기록한다 (쓰기: mcp__claude_ai_Google_Drive__create_file, 읽기: mcp__claude_ai_Google_Drive__read_file_content). 하위 에이전트는 이 URL을 입력으로 사용한다.
+7. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
 
 ---
 

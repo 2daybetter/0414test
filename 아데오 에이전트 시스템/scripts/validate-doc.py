@@ -69,10 +69,10 @@ RULES = {
         "doc_code": "AY-01",
         "required_sections": [
             r"(현황|현황 ?분석)",              # 현황 분석
-            r"REQ-F-\d{3}",                   # 기능 요구사항 코드
-            r"REQ-NF-\d{3}",                  # 비기능 요구사항 코드
-            r"(제약|REQ-C)",                  # 제약사항
-            r"(Must|Should|Nice)",            # 우선순위
+            r"(기능 ?요구사항|## ?\d+.*기능)",  # 기능 요구사항 섹션
+            r"(비기능 ?요구사항|## ?\d+.*비기능)", # 비기능 요구사항 섹션
+            r"(제약|보안|성능|운영)",           # 비기능 항목 존재
+            r"(필수|선택|Must|Should|우선순위)", # 우선순위 표기
         ],
         "min_lines": 30,
         "description": "요구사항정의서 (AY-01)",
@@ -88,19 +88,33 @@ def detect_rule(filepath: str) -> tuple[str, dict] | None:
     return None
 
 
-def validate(filepath: str) -> bool:
-    path = Path(filepath)
+def validate(filepath: str, content: str | None = None, doc_type: str | None = None) -> bool:
+    """
+    filepath : 로컬 파일 경로 (content가 None일 때 파일을 직접 읽음)
+    content  : 검증할 텍스트 (Drive MCP로 읽은 내용을 직접 전달할 때 사용)
+    doc_type : 문서 유형 키워드 강제 지정 (예: "요구사항정의서"). None이면 filepath에서 자동 감지
+    """
+    if content is None:
+        path = Path(filepath)
+        if not path.exists():
+            print(f"[FAIL] 파일을 찾을 수 없습니다: {filepath}")
+            return False
+        content = path.read_text(encoding="utf-8")
 
-    # 파일 존재 확인
-    if not path.exists():
-        print(f"[FAIL] 파일을 찾을 수 없습니다: {filepath}")
-        return False
-
-    content = path.read_text(encoding="utf-8")
     lines = content.splitlines()
 
-    # 규칙 감지
-    result = detect_rule(filepath)
+    # 규칙 감지 — doc_type 강제 지정 우선
+    if doc_type:
+        # 부분 일치 허용
+        matched = None
+        for key in RULES:
+            if key.lower() in doc_type.lower() or doc_type.lower() in key.lower():
+                matched = (key, RULES[key])
+                break
+        result = matched
+    else:
+        result = detect_rule(filepath)
+
     if result is None:
         print(f"[SKIP] 알 수 없는 문서 유형입니다. 파일명에 문서 유형 키워드가 없습니다.")
         print(f"       지원 유형: {', '.join(RULES.keys())}")
@@ -139,13 +153,34 @@ def validate(filepath: str) -> bool:
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("사용법: python scripts/validate-doc.py <파일경로>")
-        print("예시:  python scripts/validate-doc.py output/구축 파트/테스트/PM/kickoff-테스트.md")
+    import argparse as _argparse
+    parser = _argparse.ArgumentParser(
+        description="아데오 산출물 구조 검증 스크립트",
+        epilog=(
+            "사용법 1 (로컬 파일): python scripts/validate-doc.py path/to/file.md\n"
+            "사용법 2 (stdin 파이프): echo '<내용>' | python scripts/validate-doc.py --stdin --doc-type 요구사항정의서\n"
+            "사용법 3 (Drive MCP 내용): python scripts/validate-doc.py --content '<텍스트>' --doc-type kickoff"
+        ),
+    )
+    parser.add_argument("filepath", nargs="?", default="", help="로컬 파일 경로 (선택)")
+    parser.add_argument("--doc-type", default="", help="문서 유형 강제 지정 (예: 요구사항정의서, kickoff, ia-)")
+    parser.add_argument("--content", default="", help="검증할 텍스트 직접 전달 (Drive MCP 내용 등)")
+    parser.add_argument("--stdin", action="store_true", help="stdin에서 내용 읽기")
+    args = parser.parse_args()
+
+    content = None
+    filepath = args.filepath or "<stdin>"
+
+    if args.stdin:
+        content = sys.stdin.read()
+    elif args.content:
+        content = args.content
+    elif not args.filepath:
+        parser.print_help()
         sys.exit(1)
 
-    filepath = sys.argv[1]
-    success = validate(filepath)
+    doc_type = args.doc_type or None
+    success = validate(filepath, content=content, doc_type=doc_type)
     sys.exit(0 if success else 1)
 
 

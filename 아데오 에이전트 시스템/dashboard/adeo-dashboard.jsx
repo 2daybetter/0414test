@@ -1,52 +1,53 @@
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
 
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS — shadcn/ui dark theme
-   ref: https://ui.shadcn.com/docs/theming
+   DESIGN TOKENS — KRDS v1.0.0
+   ref: /templates/krds-design-system.md
+   공식: https://www.krds.go.kr
 ───────────────────────────────────────────── */
 const T = {
-  // Base surfaces (zinc scale — light)
-  background:  "#ffffff",   // white
-  card:        "#ffffff",
-  surface:     "#f4f4f5",   // zinc-100
-  elevated:    "#e4e4e7",   // zinc-200 (hover states)
+  // Base surfaces
+  background:  "#FFFFFF",
+  card:        "#FFFFFF",
+  surface:     "#F7F8FA",   // KRDS 서브 배경
+  elevated:    "#E0E2EA",   // KRDS 테두리 (hover)
 
   // Borders
-  border:      "#e4e4e7",   // zinc-200
-  borderMuted: "#d4d4d8",   // zinc-300
-  input:       "#e4e4e7",
+  border:      "#E0E2EA",
+  borderMuted: "#CDD0D8",
+  input:       "#E0E2EA",
 
   // Text
-  foreground:     "#09090b",  // zinc-950
-  mutedFg:        "#71717a",  // zinc-500
-  dimFg:          "#a1a1aa",  // zinc-400
+  foreground:     "#1A1E2B",  // KRDS 기본 텍스트
+  mutedFg:        "#6B7280",  // KRDS 보조 텍스트
+  dimFg:          "#9CA3AF",
 
-  // Radius (matches --radius: 0.625rem)
-  radius:   "0.625rem",  // 10px
-  radiusSm: "0.375rem",  // 6px
-  radiusLg: "0.75rem",   // 12px
-  radiusXl: "0.875rem",  // 14px
+  // Radius (8px 그리드 기준)
+  radius:   "0.5rem",   // 8px
+  radiusSm: "0.25rem",  // 4px — 버튼
+  radiusLg: "0.75rem",  // 12px
+  radiusXl: "0.75rem",  // 12px
 
-  // Accent colors (shadcn chart palette style)
-  primary:  "#7c3aed",   // violet-600
-  proposal: "#4f46e5",   // indigo-600
-  agency:   "#2563eb",   // blue-600
-  ops:      "#059669",   // emerald-600
-  lab:      "#ea580c",   // orange-600
+  // Accent colors — KRDS 기반
+  primary:  "#256EF4",   // KRDS Primary (정부 블루)
+  proposal: "#4A5FC8",   // 제안파트 인디고
+  agency:   "#0B50D0",   // KRDS Primary Dark
+  ops:      "#1B7F3E",   // KRDS Success
+  lab:      "#C45000",   // KRDS Warning
 
   // Semantic
-  success:     "#16a34a",  // green-600
-  successMuted:"#dcfce7",
-  warn:        "#d97706",  // amber-600
-  warnMuted:   "#fef9c3",
-  danger:      "#dc2626",  // red-600
-  dangerMuted: "#fee2e2",
+  success:     "#1B7F3E",  // KRDS Success
+  successMuted:"#E8F5EC",
+  warn:        "#C45000",  // KRDS Warning
+  warnMuted:   "#FFF3E0",
+  danger:      "#C40A0A",  // KRDS Danger
+  dangerMuted: "#FDECEA",
 };
 
 /* ─────────────────────────────────────────────
-   MOCK DATA
+   DATA — defaults (overridden by KPI loader)
 ───────────────────────────────────────────── */
-const OPPORTUNITIES = [
+let OPPORTUNITIES = [
   { id: "OPP-001", name: "스마트팩토리 AI 관제 시스템",  client: "한국제조(주)",    value: "4.2억", stage: "제안서 작성중", assigned: "전략팀",     match: 82, days: 12, policy: "스마트공장 고도화 사업" },
   { id: "OPP-002", name: "의료 클라우드 EMR 전환",       client: "서울의료재단",    value: "2.8억", stage: "정책자금 매칭", assigned: "정책자금팀",   match: 74, days: 5,  policy: "의료기관 디지털 전환" },
   { id: "OPP-003", name: "물류 TMS 고도화",             client: "동방로지스틱스",   value: "6.1억", stage: "제안서 완성",   assigned: "전략팀",     match: 91, days: 18, policy: "물류 스마트화 지원" },
@@ -54,7 +55,7 @@ const OPPORTUNITIES = [
   { id: "OPP-005", name: "핀테크 백오피스 자동화",       client: "소울페이먼츠",    value: "1.9억", stage: "정책자금 매칭", assigned: "정책자금팀",   match: 79, days: 7,  policy: "혁신창업 패키지 지원" },
 ];
 
-const PROJECTS = [
+let PROJECTS = [
   { id: "PRJ-001", name: "K-바이오 연구원 정보시스템",   phase: "IM", progress: 62, team: "구축 파트", days_in_phase: 14, outputs: 8,  status: "normal", budget: "3.8억" },
   { id: "PRJ-002", name: "스마트시티 통합 대시보드",     phase: "DE", progress: 38, team: "구축 파트", days_in_phase: 6,  outputs: 5,  status: "normal", budget: "5.2억" },
   { id: "PRJ-003", name: "이커머스 풀스택 리뉴얼",       phase: "TE", progress: 87, team: "구축 파트", days_in_phase: 15, outputs: 12, status: "warn",   budget: "2.1억" },
@@ -83,7 +84,7 @@ const RESEARCH_REPORTS = [
   { id: "LAB-005", topic: "WebAssembly 도입 가능성",                 type: "기술 리서치", status: "대기",  recommendation: "—",         date: "—" },
 ];
 
-const KPI_WEEKLY = {
+let KPI_WEEKLY = {
   period: "2026-04-10 ~ 2026-04-16",
   outputs_created: 11, outputs_target: 3,
   validation_pass_rate: 94,
@@ -93,7 +94,7 @@ const KPI_WEEKLY = {
   team_output: { "웹기획팀": 4, "디자인팀": 3, "개발팀": 4 },
 };
 
-const KPI_MONTHLY = {
+let KPI_MONTHLY = {
   period: "2026년 04월",
   total_outputs: 38, validation_pass_rate: 91,
   proposal_conversion: 60, policy_fund_matches: 3,
@@ -114,6 +115,93 @@ const RECENT_OUTPUTS = [
   { name: "design-system-스마트시티.md",         team: "디자인팀", project: "스마트시티 대시보드", age: "5일 전" },
   { name: "LAB-01-AI에이전트오케스트레이션.md",  team: "연구소",   project: "—",                  age: "6일 전" },
 ];
+
+/* ─────────────────────────────────────────────
+   KPI DATA MAPPER  (collect-kpi.py JSON → dashboard arrays)
+───────────────────────────────────────────── */
+const TODAY_ISO = new Date().toISOString().slice(0, 10);
+
+const STEP_PROGRESS = { PM: 5, AY: 15, DE: 35, IM: 60, TE: 85, OP: 95 };
+
+function _daysIn(lockedAt) {
+  if (!lockedAt) return 0;
+  return Math.max(0, Math.floor((Date.now() - new Date(lockedAt)) / 86400000));
+}
+
+function _mapOppStage(currentStep, hasProposal) {
+  if (hasProposal) return "제안서 완성";
+  const s = (currentStep || "").toUpperCase();
+  if (s.includes("C-2") || s.includes("제안서")) return "제안서 작성중";
+  if (s.includes("D") || s.includes("정책자금")) return "정책자금 매칭";
+  return "기회 탐색";
+}
+
+function applyKpiData(raw) {
+  const bp = raw["구축파트"] || {};
+  const pp = raw["제안파트"] || {};
+
+  PROJECTS = (bp.projects || []).map((p, i) => ({
+    id: `PRJ-${String(i + 1).padStart(3, "0")}`,
+    name: p.name,
+    phase: p.step_code || "PM",
+    progress: STEP_PROGRESS[p.step_code] ?? 0,
+    team: "구축 파트",
+    days_in_phase: _daysIn(p.locked_at),
+    outputs: p.output_count ?? 0,
+    status: p.delayed ? "warn" : "normal",
+    budget: "—",
+  }));
+
+  OPPORTUNITIES = (pp.opportunities || []).map((o, i) => ({
+    id: `OPP-${String(i + 1).padStart(3, "0")}`,
+    name: o.name,
+    client: "—",
+    value: "—",
+    stage: _mapOppStage(o.current_step, o.has_proposal),
+    assigned: o.locked_by || "—",
+    match: o.has_proposal ? 85 : 50,
+    days: _daysIn(null),
+    policy: o.has_policy_fund ? "매칭됨" : "—",
+  }));
+
+  const today = raw.collected_at || TODAY_ISO;
+  KPI_WEEKLY = {
+    period: `${today} 기준`,
+    outputs_created: bp.weekly_outputs ?? 0,
+    outputs_target: Math.max(1, PROJECTS.length),
+    validation_pass_rate: 100,
+    projects_active: bp.active_projects ?? 0,
+    proposals_active: pp.active_opportunities ?? 0,
+    proposals_submitted: pp.proposal_count ?? 0,
+    delays: (bp.delayed_projects || []).map(name => {
+      const p = PROJECTS.find(x => x.name === name);
+      return { project: name, phase: p?.phase || "—", days_over: p?.days_in_phase ?? 0, threshold: 14 };
+    }),
+    by_phase: bp.step_distribution ?? {},
+    team_output: {},
+  };
+
+  KPI_MONTHLY = {
+    period: today.slice(0, 7).replace("-", "년 ") + "월",
+    total_outputs: bp.total_outputs ?? 0,
+    validation_pass_rate: 100,
+    proposal_conversion: pp.conversion_rate_pct ?? 0,
+    policy_fund_matches: pp.policy_fund_count ?? 0,
+    ops_uptime_avg: 100,
+    lab_reports: 0,
+    revenue_est: "—",
+    pipeline_est: "—",
+    summary_bullets: [
+      `구축 파트 ${bp.active_projects ?? 0}개 프로젝트 진행 중`,
+      `제안 파트 ${pp.active_opportunities ?? 0}개 기회 활성화, 제안서 전환율 ${pp.conversion_rate_pct ?? 0}%`,
+      `정책자금 매칭 ${pp.policy_fund_count ?? 0}건`,
+      `지연 프로젝트 ${(bp.delayed_projects || []).length}건`,
+    ],
+  };
+}
+
+/* re-render trigger context */
+const RevCtx = createContext(0);
 
 /* ─────────────────────────────────────────────
    PRIMITIVE COMPONENTS  (shadcn-style)
@@ -200,7 +288,7 @@ function StatBlock({ label, value, sub, delta, accent }) {
     <div>
       <p style={{ margin: "0 0 8px", fontSize: 12, fontWeight: 500, color: T.mutedFg }}>{label}</p>
       <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-        <span style={{ fontSize: 26, fontWeight: 700, color: accent || T.foreground, fontFamily: "'Geist Mono', 'JetBrains Mono', monospace", lineHeight: 1 }}>{value}</span>
+        <span style={{ fontSize: 26, fontWeight: 700, color: accent || T.foreground, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{value}</span>
         {sub && <span style={{ fontSize: 12, color: T.mutedFg }}>{sub}</span>}
       </div>
       {delta !== undefined && (
@@ -223,7 +311,7 @@ function PhaseTag({ phase }) {
       fontSize: 11, fontWeight: 700, letterSpacing: "0.06em",
       color: c, background: c + "1a",
       border: `1px solid ${c}33`,
-      fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
+      fontFamily: "'JetBrains Mono', monospace",
     }}>{phase}</span>
   );
 }
@@ -281,7 +369,7 @@ function PageHeader({ title, description }) {
 function OverviewView() {
   return (
     <div>
-      <PageHeader title="전체 현황" description="아데오 그룹 에이전트 시스템 실시간 운영 현황 — 2026-04-16 기준" />
+      <PageHeader title="전체 현황" description={`아데오 그룹 에이전트 시스템 실시간 운영 현황 — ${TODAY_ISO} 기준`} />
 
       {/* KPI row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 20 }}>
@@ -315,7 +403,7 @@ function OverviewView() {
                     </div>
                     <span style={{
                       fontSize: 12, fontWeight: 600,
-                      fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
+                      fontFamily: "'JetBrains Mono', monospace",
                       color: p.status === "warn" ? T.warn : T.mutedFg,
                     }}>{p.progress}%</span>
                   </div>
@@ -372,7 +460,7 @@ function OverviewView() {
                   <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0" }}>
                     <div style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontFamily: "'Geist Mono', 'JetBrains Mono', monospace", color: T.foreground, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.name}</div>
+                      <div style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", color: T.foreground, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.name}</div>
                       <div style={{ fontSize: 11, color: T.mutedFg, marginTop: 2 }}>{o.team} · {o.project}</div>
                     </div>
                     <span style={{ fontSize: 11, color: T.dimFg, flexShrink: 0 }}>{o.age}</span>
@@ -430,11 +518,11 @@ function OverviewView() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div style={{ padding: "12px 14px", borderRadius: T.radius, background: T.surface, border: `1px solid ${T.border}` }}>
                 <p style={{ margin: "0 0 4px", fontSize: 11, color: T.mutedFg }}>문서 검증 통과율</p>
-                <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.success, fontFamily: "'Geist Mono', monospace" }}>94%</p>
+                <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.success, fontFamily: "'JetBrains Mono', monospace" }}>94%</p>
               </div>
               <div style={{ padding: "12px 14px", borderRadius: T.radius, background: T.surface, border: `1px solid ${T.border}` }}>
                 <p style={{ margin: "0 0 4px", fontSize: 11, color: T.mutedFg }}>평균 서비스 업타임</p>
-                <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.ops, fontFamily: "'Geist Mono', monospace" }}>99.93%</p>
+                <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.ops, fontFamily: "'JetBrains Mono', monospace" }}>99.93%</p>
               </div>
             </div>
           </CardContent>
@@ -464,9 +552,9 @@ function ProposalView() {
           <CardHeader><CardTitle>기회 상세</CardTitle><CardDescription>현재 활성화된 모든 수주 기회</CardDescription></CardHeader>
           <CardContent style={{ padding: 0, paddingBottom: 0 }}>
             <DataTable
-              headers={["ID", "기회명", "클라이언트", "규모", "단계", "매칭률", "경과"]}
+              headers={["ID", "프로젝트명", "클라이언트", "규모", "단계", "매칭률", "경과"]}
               rows={OPPORTUNITIES.map(o => [
-                <span style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: T.dimFg }}>{o.id}</span>,
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: T.dimFg }}>{o.id}</span>,
                 <span style={{ fontWeight: 500 }}>{o.name}</span>,
                 <span style={{ color: T.mutedFg }}>{o.client}</span>,
                 <span style={{ fontWeight: 600 }}>{o.value}</span>,
@@ -476,9 +564,9 @@ function ProposalView() {
                 />,
                 <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 100 }}>
                   <Progress value={o.match} color={T.proposal} height={4} />
-                  <span style={{ fontSize: 11, color: T.mutedFg, minWidth: 28, fontFamily: "'Geist Mono', monospace" }}>{o.match}%</span>
+                  <span style={{ fontSize: 11, color: T.mutedFg, minWidth: 28, fontFamily: "'JetBrains Mono', monospace" }}>{o.match}%</span>
                 </div>,
-                <span style={{ color: T.dimFg, fontSize: 12, fontFamily: "'Geist Mono', monospace" }}>{o.days}일</span>,
+                <span style={{ color: T.dimFg, fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>{o.days}일</span>,
               ])}
             />
           </CardContent>
@@ -541,7 +629,7 @@ function WebAgencyView() {
                 <div key={ph} style={{ background: T.card, padding: "12px 10px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: c, letterSpacing: "0.08em", fontFamily: "'Geist Mono', monospace" }}>{ph}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: c, letterSpacing: "0.08em", fontFamily: "'JetBrains Mono', monospace" }}>{ph}</span>
                     <span style={{ fontSize: 11, color: T.dimFg, marginLeft: "auto" }}>{inPhase.length}</span>
                   </div>
                   {inPhase.length === 0
@@ -575,13 +663,13 @@ function WebAgencyView() {
               <PhaseTag phase={p.phase} />,
               <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 110 }}>
                 <Progress value={p.progress} color={p.status === "warn" ? T.warn : PHASE_COLOR[p.phase]} height={5} />
-                <span style={{ fontSize: 12, color: T.mutedFg, minWidth: 30, fontFamily: "'Geist Mono', monospace" }}>{p.progress}%</span>
+                <span style={{ fontSize: 12, color: T.mutedFg, minWidth: 30, fontFamily: "'JetBrains Mono', monospace" }}>{p.progress}%</span>
               </div>,
               <span style={{
-                fontFamily: "'Geist Mono', monospace", fontSize: 12,
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
                 color: p.days_in_phase > 14 ? T.warn : T.mutedFg,
               }}>{p.days_in_phase}일</span>,
-              <span style={{ fontFamily: "'Geist Mono', monospace", fontSize: 12 }}>{p.outputs}</span>,
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{p.outputs}</span>,
               <span style={{ fontWeight: 600, fontSize: 12 }}>{p.budget}</span>,
               <Badge label={p.status === "warn" ? "지연 경고" : "정상"} variant={p.status === "warn" ? "warn" : "success"} />,
             ])}
@@ -600,7 +688,7 @@ function WebAgencyView() {
                 background: T.surface, border: `1px solid ${T.border}`,
                 textAlign: "center",
               }}>
-                <div style={{ fontSize: 36, fontWeight: 700, color: T.foreground, fontFamily: "'Geist Mono', monospace", lineHeight: 1 }}>{cnt}</div>
+                <div style={{ fontSize: 36, fontWeight: 700, color: T.foreground, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{cnt}</div>
                 <div style={{ fontSize: 12, color: T.mutedFg, marginTop: 8 }}>{team}</div>
               </div>
             ))}
@@ -641,11 +729,11 @@ function OperationsView() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 14 }}>
                 <div>
                   <p style={{ margin: "0 0 4px", fontSize: 11, color: T.mutedFg }}>업타임</p>
-                  <p style={{ margin: 0, fontSize: 22, fontWeight: 700, fontFamily: "'Geist Mono', monospace", color: op.uptime >= 99.9 ? T.success : T.warn }}>{op.uptime}%</p>
+                  <p style={{ margin: 0, fontSize: 22, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: op.uptime >= 99.9 ? T.success : T.warn }}>{op.uptime}%</p>
                 </div>
                 <div>
                   <p style={{ margin: "0 0 4px", fontSize: 11, color: T.mutedFg }}>NPS</p>
-                  <p style={{ margin: 0, fontSize: 22, fontWeight: 700, fontFamily: "'Geist Mono', monospace", color: T.foreground }}>{op.nps}</p>
+                  <p style={{ margin: 0, fontSize: 22, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: T.foreground }}>{op.nps}</p>
                 </div>
               </div>
               <Progress value={op.uptime} color={op.uptime >= 99.9 ? T.success : T.warn} />
@@ -673,7 +761,7 @@ function OperationsView() {
           <DataTable
             headers={["ID", "서비스", "유형", "심각도", "이슈 내용", "상태", "접수일"]}
             rows={OPS_ISSUES.map(issue => [
-              <span style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: T.dimFg }}>{issue.id}</span>,
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: T.dimFg }}>{issue.id}</span>,
               <span style={{ fontSize: 12 }}>{issue.project.split(" ").slice(-2).join(" ")}</span>,
               <Badge label={issue.type} variant="outline" />,
               <Badge label={issue.severity} variant={severityBadge[issue.severity] || "secondary"} />,
@@ -714,14 +802,14 @@ function ResearchView() {
             <DataTable
               headers={["ID", "주제", "유형", "상태", "권고", "날짜"]}
               rows={RESEARCH_REPORTS.map(r => [
-                <span style={{ fontFamily: "'Geist Mono', monospace", fontSize: 11, color: T.dimFg }}>{r.id}</span>,
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: T.dimFg }}>{r.id}</span>,
                 <span style={{ fontWeight: 500, fontSize: 13 }}>{r.topic}</span>,
                 <Badge label={r.type} variant="outline" />,
                 <Badge label={r.status} variant={statusBadge[r.status] || "secondary"} />,
                 r.recommendation !== "—"
                   ? <Badge label={r.recommendation} variant={recBadge[r.recommendation] || "secondary"} />
                   : <span style={{ color: T.dimFg, fontSize: 12 }}>—</span>,
-                <span style={{ fontSize: 11, color: T.dimFg, fontFamily: "'Geist Mono', monospace" }}>{r.date}</span>,
+                <span style={{ fontSize: 11, color: T.dimFg, fontFamily: "'JetBrains Mono', monospace" }}>{r.date}</span>,
               ])}
             />
           </CardContent>
@@ -917,7 +1005,7 @@ function MonthlyReportView() {
                 }}>
                   <p style={{ margin: "0 0 10px", fontSize: 11, color: T.mutedFg }}>{k.label}</p>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                    <span style={{ fontSize: 22, fontWeight: 700, color: k.color, fontFamily: "'Geist Mono', monospace" }}>{k.value}{k.unit}</span>
+                    <span style={{ fontSize: 22, fontWeight: 700, color: k.color, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}{k.unit}</span>
                     <span style={{ fontSize: 11, color: T.dimFg }}>목표 {k.target}{k.unit}</span>
                   </div>
                   <Progress value={pct} color={hit ? k.color : T.warn} />
@@ -939,12 +1027,12 @@ function MonthlyReportView() {
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
                 <p style={{ margin: "0 0 6px", fontSize: 12, color: T.mutedFg }}>이달 확정 매출 (추정)</p>
-                <p style={{ margin: 0, fontSize: 30, fontWeight: 700, color: T.success, fontFamily: "'Geist Mono', monospace" }}>{KPI_MONTHLY.revenue_est}</p>
+                <p style={{ margin: 0, fontSize: 30, fontWeight: 700, color: T.success, fontFamily: "'JetBrains Mono', monospace" }}>{KPI_MONTHLY.revenue_est}</p>
               </div>
               <Separator />
               <div>
                 <p style={{ margin: "0 0 6px", fontSize: 12, color: T.mutedFg }}>수주 파이프라인 합계</p>
-                <p style={{ margin: 0, fontSize: 30, fontWeight: 700, color: T.proposal, fontFamily: "'Geist Mono', monospace" }}>{KPI_MONTHLY.pipeline_est}</p>
+                <p style={{ margin: 0, fontSize: 30, fontWeight: 700, color: T.proposal, fontFamily: "'JetBrains Mono', monospace" }}>{KPI_MONTHLY.pipeline_est}</p>
               </div>
               <p style={{ margin: 0, fontSize: 11, color: T.dimFg, lineHeight: 1.6 }}>※ 위 수치는 추정값입니다. 확정 매출은 계약 완료 기준으로 별도 집계됩니다.</p>
             </div>
@@ -1008,8 +1096,73 @@ const NAV_GROUPS = [
 /* ─────────────────────────────────────────────
    ROOT APP
 ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   KPI LOAD MODAL
+───────────────────────────────────────────── */
+function KpiLoadModal({ onClose, onLoad }) {
+  const [text, setText] = useState("");
+  const [err, setErr] = useState("");
+
+  function handleLoad() {
+    try {
+      const data = JSON.parse(text.trim());
+      if (!data["구축파트"] && !data["제안파트"]) throw new Error("구축파트/제안파트 키가 없습니다.");
+      applyKpiData(data);
+      onLoad();
+      onClose();
+    } catch (e) {
+      setErr(String(e.message));
+    }
+  }
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 9999,
+      background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }} onClick={onClose}>
+      <div style={{
+        background: T.card, borderRadius: T.radiusLg,
+        border: `1px solid ${T.border}`, padding: 24, width: 540,
+        boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+      }} onClick={e => e.stopPropagation()}>
+        <h2 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: T.foreground }}>KPI 데이터 로드</h2>
+        <p style={{ margin: "0 0 16px", fontSize: 12, color: T.mutedFg }}>
+          터미널에서 <code style={{ background: T.surface, padding: "2px 6px", borderRadius: 4, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>python -X utf8 scripts/collect-kpi.py</code> 출력을 붙여넣기
+        </p>
+        <textarea
+          value={text}
+          onChange={e => { setText(e.target.value); setErr(""); }}
+          placeholder={'{\n  "구축파트": { ... },\n  "제안파트": { ... }\n}'}
+          style={{
+            width: "100%", height: 200, resize: "vertical",
+            borderRadius: T.radiusSm, border: `1px solid ${err ? T.danger : T.border}`,
+            padding: "10px 12px", fontSize: 12,
+            fontFamily: "'JetBrains Mono', monospace",
+            background: T.surface, color: T.foreground,
+            outline: "none", boxSizing: "border-box",
+          }}
+        />
+        {err && <p style={{ margin: "6px 0 0", fontSize: 12, color: T.danger }}>{err}</p>}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+          <button onClick={onClose} style={{
+            padding: "8px 16px", borderRadius: T.radiusSm, border: `1px solid ${T.border}`,
+            background: "transparent", color: T.mutedFg, fontSize: 13, cursor: "pointer", fontFamily: "inherit",
+          }}>취소</button>
+          <button onClick={handleLoad} style={{
+            padding: "8px 16px", borderRadius: T.radiusSm, border: "none",
+            background: T.primary, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+          }}>적용</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdeoDashboard() {
   const [active, setActive] = useState("overview");
+  const [kpiModal, setKpiModal] = useState(false);
+  const [rev, setRev] = useState(0);  // bump to force re-render after applyKpiData()
 
   const allItems = NAV_GROUPS.flatMap(g => g.items);
   const current = allItems.find(n => n.id === active);
@@ -1019,12 +1172,12 @@ export default function AdeoDashboard() {
     <div style={{
       display: "flex", minHeight: "100vh",
       background: T.background,
-      fontFamily: "'Inter', 'Pretendard Variable', system-ui, sans-serif",
+      fontFamily: "'Pretendard Variable', 'Pretendard GOV', 'Pretendard', system-ui, sans-serif",
       color: T.foreground,
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&display=swap');
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/pretendardvariable.min.css');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; }
         body { margin: 0; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1128,16 +1281,33 @@ export default function AdeoDashboard() {
             <span style={{ color: T.foreground, fontWeight: 500 }}>{current?.label}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: T.dimFg, fontFamily: "'Geist Mono', monospace" }}>2026-04-16</span>
+            <span style={{ fontSize: 12, color: T.dimFg, fontFamily: "'JetBrains Mono', monospace" }}>{TODAY_ISO}</span>
+            <button
+              onClick={() => setKpiModal(true)}
+              style={{
+                padding: "4px 10px", borderRadius: T.radiusSm,
+                border: `1px solid ${T.border}`, background: T.surface,
+                color: T.mutedFg, fontSize: 12, cursor: "pointer", fontFamily: "inherit",
+              }}
+            >KPI 로드</button>
             <Badge label="v1.0" variant="secondary" />
           </div>
         </header>
 
         {/* Content */}
-        <div style={{ padding: "32px", maxWidth: 1360 }}>
-          <View />
-        </div>
+        <RevCtx.Provider value={rev}>
+          <div style={{ padding: "32px", maxWidth: 1360 }}>
+            <View />
+          </div>
+        </RevCtx.Provider>
       </main>
+
+      {kpiModal && (
+        <KpiLoadModal
+          onClose={() => setKpiModal(false)}
+          onLoad={() => setRev(r => r + 1)}
+        />
+      )}
     </div>
   );
 }
