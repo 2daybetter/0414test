@@ -6,7 +6,7 @@
 
 | 지표명 | 정의 | 목표값 | 경고 기준 |
 |--------|------|--------|---------|
-| 활성 프로젝트 수 | `.status/구축 파트/` 하위 디렉토리 수 | — | 5개 초과 시 리소스 검토 |
+| 활성 프로젝트 수 | Google Drive 아데오 프로젝트 폴더 하위 프로젝트 폴더 수 (`mcp__claude_ai_Google_Drive__search_files`) | — | 5개 초과 시 리소스 검토 |
 | 주간 산출물 생성 수 | 해당 주 `.status outputs:` 섹션에 신규 추가된 Drive/Figma URL 수 | 3개/주 이상 | 0개면 진행 지연 경고 |
 | 단계 체류 기간 | `.status` `locked_at` 기준 경과일 | PM~AY: 7일 이내 | 14일 초과 시 지연 경고 |
 | 검증 통과율 | validate-doc.py PASS 수 / 전체 산출물 수 | 90% 이상 | 70% 미만 시 품질 경고 |
@@ -15,9 +15,9 @@
 
 | 지표명 | 정의 | 목표값 | 경고 기준 |
 |--------|------|--------|---------|
-| 활성 기회 수 | `.status/제안 파트/` 하위 디렉토리 수 | — | — |
-| 제안서 완성 수 | `.status/제안 파트/**/.status`의 `outputs.proposal` URL 존재 건수 | — | — |
-| 정책자금 매칭 수 | `.status/제안 파트/**/.status`의 `outputs.policy-fund` URL 존재 건수 | — | — |
+| 활성 기회 수 | Google Drive 아데오 프로젝트 폴더 하위 기회 폴더 수 | — | — |
+| 제안서 완성 수 | 각 기회의 Google Drive `.status/.status` 파일의 `outputs.proposal` URL 존재 건수 | — | — |
+| 정책자금 매칭 수 | 각 기회의 Google Drive `.status/.status` 파일의 `outputs.policy-fund` URL 존재 건수 | — | — |
 | 기회 → 제안 전환율 | 제안서 완성 수 / 활성 기회 수 × 100 | 70% 이상 | 50% 미만 시 전략 재검토 |
 
 ---
@@ -90,10 +90,10 @@ last_output: {파일명 또는 없음}
 ## 집계 스크립트 없을 때 수동 집계 체크리스트
 
 ```
-[ ] .status/구축 파트/ 하위 디렉토리 수 확인
-[ ] .status/구축 파트/**/.status 파일에서 outputs: 섹션 URL 존재 항목 수 확인
-[ ] .status/구축 파트/**/.status 파일에서 current_step 목록 추출
-[ ] .status/제안 파트/ 하위 디렉토리 수 확인
-[ ] .status/제안 파트/**/.status 파일에서 outputs.proposal URL 존재 건수 확인
-[ ] .status/제안 파트/**/.status 파일에서 outputs.policy-fund URL 존재 건수 확인
+[ ] Google Drive 아데오 프로젝트 폴더 하위 프로젝트 폴더 수 확인 (mcp__claude_ai_Google_Drive__search_files, 루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
+[ ] 각 프로젝트의 Google Drive .status/.status 파일에서 outputs: 섹션 URL 존재 항목 수 확인
+[ ] 각 프로젝트의 Google Drive .status/.status 파일에서 current_step 목록 추출
+[ ] Google Drive 아데오 프로젝트 폴더 하위 기회 폴더 수 확인
+[ ] 각 기회의 Google Drive .status/.status 파일에서 outputs.proposal URL 존재 건수 확인
+[ ] 각 기회의 Google Drive .status/.status 파일에서 outputs.policy-fund URL 존재 건수 확인
 ```

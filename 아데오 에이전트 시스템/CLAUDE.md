@@ -44,8 +44,8 @@
 ```
 [입력: 고객사 URL + RFP 문서]
         ↓
-[Step 0: rfp-analyzer 스킬 실행]
-  → rfp-context를 Google Drive MCP로 업로드 → URL을 .status/제안 파트/{기회명}/.status 의 outputs.rfp-context 에 기록
+[Step 0: rfp-analyzer 스킬 실행 — 영업팀 L3 담당]
+  → rfp-context를 Google Drive MCP로 업로드 → URL을 Google Drive 아데오 프로젝트/{기회명}/.status/.status 파일의 outputs.rfp-context 에 기록 (mcp__claude_ai_Google_Drive__create_file, 루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
         ↓
 [제안 파트 자동 실행 — proposal-co L2]
   Step A: 기회 분석서 자동 생성 (rfp-context.md 기반)
@@ -213,7 +213,7 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 1. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
 2. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
 3. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
-4. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 `.status/{파트}/{프로젝트명}/.status` 파일의 `outputs:` 섹션에 Drive/Figma URL을 기록한다. 하위 에이전트는 이 URL을 입력으로 사용한다.
+4. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 Google Drive 아데오 프로젝트/{프로젝트명}/.status 폴더의 `.status` 파일 (루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM) `outputs:` 섹션에 Drive/Figma URL을 기록한다 (쓰기: mcp__claude_ai_Google_Drive__create_file, 읽기: mcp__claude_ai_Google_Drive__read_file_content). 하위 에이전트는 이 URL을 입력으로 사용한다.
 5. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
 
 ---
@@ -245,7 +245,7 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 
 각 탭 컬럼: 번호 | 파트 | 업무명 | 담당자 | 시작일 | 완료예정일 | 진행률 | 상태 | 주요내용 | 커뮤니케이션이력 | 비고
 
-Sheet ID는 `.status/report-config.yaml`에 저장.
+Sheet ID는 Google Drive 아데오 프로젝트 루트 폴더 (ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)의 `report-config.yaml`에 저장.
 
 ### 주간/월간 보고 자동화
 
@@ -258,7 +258,7 @@ Sheet ID는 `.status/report-config.yaml`에 저장.
 
 ### KPI 모니터링
 
-- **집계 방식**: `scripts/collect-kpi.py`로 `.status/` 스캔 → LLM 해석 → `kpi-reporter` 스킬로 보고서 생성
+- **집계 방식**: `scripts/collect-kpi.py`로 Google Drive 아데오 프로젝트 폴더 스캔 (루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM) → LLM 해석 → `kpi-reporter` 스킬로 보고서 생성
 
 ---
 
@@ -268,7 +268,7 @@ Sheet ID는 `.status/report-config.yaml`에 저장.
 
 | 스킬명 | 트리거 | 역할 |
 |--------|--------|------|
-| `rfp-analyzer` | URL + RFP 동시 제공 시 자동 실행 | URL 분석 + RFP 파싱 → rfp-context.md 생성 |
+| `rfp-analyzer` | URL + RFP 동시 제공 시 영업팀 L3이 Step A-0에서 실행 | URL 분석 + RFP 파싱 → rfp-context.md 생성 |
 | `proposal-writer` | 제안서 작성 요청 | 제안서 초안 생성 |
 | `strategy-analyzer` | 시장/경쟁사 분석 요청 | 분석 문서 작성 |
 | `policy-fund-finder` | 정책자금 조회 | 매칭 자금 목록 생성 |

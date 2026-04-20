@@ -23,7 +23,7 @@
 |--------|---------|
 | 구축 파트 L2가 Step 11 (DE-3) 위임 | 화면설계서 + 디자인 시스템 완료 후 기술 설계 시작 |
 
-**사전 조건**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe` Figma URL + `outputs.design-system` Drive URL 이 모두 존재해야 활성화된다.
+**사전 조건**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wireframe` Figma URL + `outputs.design-system` Drive URL 이 모두 존재해야 활성화된다.
 
 ---
 
@@ -31,7 +31,7 @@
 
 ### Step 11 — DE 단계-3: 기술 설계 문서 작성
 
-- **입력**: 화면설계서 Figma URL (`.status outputs.wireframe`) + 디자인 시스템 Drive URL (`.status outputs.design-system`) + 요구사항정의서 Drive URL (`.status outputs.requirements`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
+- **입력**: 화면설계서 Figma URL (Google Drive `.status` 파일의 `outputs.wireframe`) + 디자인 시스템 Drive URL (Google Drive `.status` 파일의 `outputs.design-system`) + 요구사항정의서 Drive URL (Google Drive `.status` 파일의 `outputs.requirements`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
   1. 화면설계서에서 필요 데이터 항목 추출
   2. **기술 스택 결정 (분기)**:
@@ -54,7 +54,7 @@
   - 주요 요청/응답 파라미터 명세 (JSON 구조)
   - 에러 코드 정의 (400 / 401 / 403 / 404 / 500)
 
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.tech-spec`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.tech-spec`에 기록
 - **성공 기준**: 테이블정의서(테이블 5개 이상) + 프로그램 목록 + API 정의서(엔드포인트 10개 이상) 3개 항목 모두 존재
 - **검증 방법**: `scripts/validate-doc.py` 실행 + LLM 자기 검증 (4개 섹션 + API 엔드포인트 수 확인)
 - **실패 시 처리**: 자동 재시도 1회 → 초과 시 누락 항목 명시 후 구축 파트 L2 에스컬레이션

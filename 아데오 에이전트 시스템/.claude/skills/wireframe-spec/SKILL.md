@@ -24,7 +24,7 @@ IA 설계서 기반으로 아데오 표준 화면설계서(DE-03)를 **Figma 파
 
 | 필수 입력 | 확인 방법 |
 |---------|---------|
-| IA 설계서 Drive URL | `.status/구축 파트/{프로젝트명}/.status`의 `outputs.ia` → `mcp__claude_ai_Google_Drive__read_file_content`로 읽기 |
+| IA 설계서 Drive URL | Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.ia` → `mcp__claude_ai_Google_Drive__read_file_content`로 읽기 |
 | 프로젝트명 | IA 설계서 헤더 또는 상위 에이전트 전달값 |
 | 고객사 브랜드 가이드 | 있으면 참조, 없으면 아데오 기본 스타일 적용 |
 
@@ -34,7 +34,7 @@ IA 설계서 기반으로 아데오 표준 화면설계서(DE-03)를 **Figma 파
 
 ### Step 2: IA 파일 파싱 — 메뉴 구조 추출
 
-`.status outputs.ia` Drive URL의 내용을 `mcp__claude_ai_Google_Drive__read_file_content`로 읽어 다음 데이터를 추출한다.
+Google Drive `.status` 파일의 `outputs.ia` Drive URL의 내용을 `mcp__claude_ai_Google_Drive__read_file_content`로 읽어 다음 데이터를 추출한다.
 
 **추출 대상 (FO · BO 각각)**:
 - 1depth 메뉴 목록 → Section 생성에 사용
@@ -149,9 +149,9 @@ Figma 파일 생성 완료 후 다음을 확인한다:
 
 Figma 파일 생성 완료 후 URL을 `.status`에 기록한다.
 
-- **Figma 파일 URL**: (생성된 URL) → `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe`에 기록
+- **Figma 파일 URL**: (생성된 URL) → Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wireframe`에 기록 (mcp__claude_ai_Google_Drive__create_file)
 
-- **성공 기준**: Figma 파일 URL 존재 + `.status outputs.wireframe`에 기록 완료 + IA 전체 Page 타입 화면 커버
+- **성공 기준**: Figma 파일 URL 존재 + Google Drive `.status` 파일의 `outputs.wireframe`에 기록 완료 + IA 전체 Page 타입 화면 커버
 
 ---
 

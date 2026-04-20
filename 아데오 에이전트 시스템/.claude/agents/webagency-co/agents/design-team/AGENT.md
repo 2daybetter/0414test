@@ -31,7 +31,7 @@
 
 ### Step 10 — DE 단계-2: 디자인 시스템 스펙 작성
 
-- **입력**: 화면설계서 Figma URL (`.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe`) + 고객사 브랜드 가이드(있는 경우) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
+- **입력**: 화면설계서 Figma URL (Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wireframe`) + 고객사 브랜드 가이드(있는 경우) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
   1. 고객사 브랜드 자산(로고, CI, 컬러) 분석
   2. **컬러/타이포 방향 결정 (분기)**:
@@ -46,7 +46,7 @@
      - **아이콘 시스템**: 아이콘 라이브러리 출처 + 커스텀 아이콘 명세
      - **이미지 가이드**: 비율 기준, 포맷, 최소/최대 크기
   4. 화면설계서의 ASCII 레이아웃과 컴포넌트 규격 정합성 자기 검증
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.design-system`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.design-system`에 기록
 - **성공 기준**: 컬러 시스템 + 타이포그래피 + 스페이싱/그리드 + 핵심 컴포넌트 규격 4개 섹션 모두 존재
 - **검증 방법**: LLM 자기 검증 — 4개 필수 섹션 존재 여부 + 컬러값(HEX 또는 토큰) 명시 여부 확인
 - **실패 시 처리**: 자동 재시도 1회 → 초과 시 누락 섹션 명시 후 구축 파트 L2 에스컬레이션

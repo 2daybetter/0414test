@@ -22,7 +22,7 @@
 
 | 트리거 | 설명 |
 |--------|------|
-| 구축 파트 → 운영 파트 인계 이벤트 | `.status/구축 파트/{프로젝트명}/.status` 의 `current_step: OP` 감지 |
+| 구축 파트 → 운영 파트 인계 이벤트 | Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `current_step: OP` 감지 (mcp__claude_ai_Google_Drive__read_file_content) |
 | 비서실 L1의 직접 위임 | "운영", "유지보수", "마케팅", "성과 보고" 등 지시 수신 |
 | 이슈 발생 보고 | 클라이언트로부터 운영 장애/문의 접수 |
 
@@ -39,7 +39,7 @@
   3. 장애 유형별 1차 대응 가이드 (장애 증상 → 확인 항목 → 조치 방법)
   4. 백업 및 복구 절차
   5. 비상 연락망 (담당자 역할별)
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/운영 파트/{프로젝트명}/.status`의 `outputs.manual`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.manual`에 기록
 - **성공 기준**: 관리자 가이드 + 장애 대응 가이드 + 비상 연락망 섹션 모두 존재
 
 ---
@@ -53,7 +53,7 @@
   3. 원인 분석 (확인된 원인 또는 추정 원인)
   4. 조치 내역 (완료 또는 진행 중)
   5. 재발 방지 방안
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/운영 파트/{프로젝트명}/.status`의 `outputs.issue-report`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.issue-report`에 기록
 - **성공 기준**: 이슈 분류 + 영향 범위 + 원인 + 조치 내역 4개 섹션 존재
 
 ---
@@ -68,7 +68,7 @@
   4. 문의 접수 건수 및 처리율
   5. 전월 대비 증감 분석
   6. 다음 달 개선 권고사항
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/운영 파트/{프로젝트명}/.status`의 `outputs.performance-report`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.performance-report`에 기록
 - **성공 기준**: 방문자 지표 + 전월 대비 분석 + 개선 권고 섹션 존재
 
 ---
@@ -80,7 +80,7 @@
   1. 채널별 콘텐츠 초안 작성 (SNS 포스트 / 뉴스레터 / 블로그 포스트 등)
   2. 핵심 메시지 및 CTA 포함
   3. 법적 필수 문구 확인 (과장 광고 금지 등)
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/운영 파트/{프로젝트명}/.status`의 `outputs.marketing`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.marketing`에 기록
 - **성공 기준**: 채널별 초안 + CTA 명시
 
 ---

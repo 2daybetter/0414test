@@ -24,7 +24,7 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 
 | 필수 입력 | 확인 방법 |
 |---------|---------|
-| 요구사항정의서 Drive URL | `.status/구축 파트/{프로젝트명}/.status`의 `outputs.requirements` → `mcp__claude_ai_Google_Drive__read_file_content`로 읽기 |
+| 요구사항정의서 Drive URL | Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.requirements` → `mcp__claude_ai_Google_Drive__read_file_content`로 읽기 |
 | 프로젝트명 | 파일명에서 추출 |
 | IA 템플릿 | `/templates/ia-template.md` 존재 여부 |
 
@@ -80,11 +80,11 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 1. FO/BO IA 설계 데이터를 JSON 스키마(`ia-template.md` 참조)에 맞게 구성
 2. `scripts/generators/gen_ia.py` 실행 → `IA_{프로젝트명}_{YYYYMMDD}.xlsx` 생성
 3. Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로 업로드
-4. 반환된 URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.ia`에 기록
+4. 반환된 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.ia`에 기록
 
 ### Step 7: 검증
 
-- **성공 기준**: FO 1depth 4개 이상 + XY 전체 중복 없음 + Page 타입 전체 URL 존재 + 집계표 정확 + `.status outputs.ia`에 Drive URL 기록 완료
+- **성공 기준**: FO 1depth 4개 이상 + XY 전체 중복 없음 + Page 타입 전체 URL 존재 + 집계표 정확 + Google Drive `.status` 파일의 `outputs.ia`에 Drive URL 기록 완료
 
 ---
 
@@ -92,7 +92,7 @@ description: 웹사이트 IA(정보구조) 설계 문서를 생성하는 스킬.
 
 | 산출물 | 형식 | 저장 위치 |
 |--------|------|---------|
-| DE-02 IA 설계서 | Google Sheets (Google Drive) | `.status outputs.ia` Drive URL |
+| DE-02 IA 설계서 | Google Sheets (Google Drive) | Google Drive `.status` 파일의 `outputs.ia` Drive URL |
 
 ---
 

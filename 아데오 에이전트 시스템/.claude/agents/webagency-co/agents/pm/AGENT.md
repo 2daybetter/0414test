@@ -44,7 +44,7 @@
      - 4개 시트 구성: WBS / 마일스톤(간트) / 산출물 / 리스크
   4. 사업수행계획서(PM-01) Figma 파일 작성 (프로젝트 개요, 조직, 일정, 산출물 계획) — Figma MCP 사용
   5. 완료보고서(PM-02) Figma 파일 작성 (팀별 투입 인원 및 역할) — Figma MCP 사용
-- **출력 파일**: 생성 완료 후 URL을 `.status/구축 파트/{프로젝트명}/.status`에 기록:
+- **출력 파일**: 생성 완료 후 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 해당 outputs 필드에 기록 (mcp__claude_ai_Google_Drive__create_file):
   - PM-03 WBS → `outputs.wbs`: Google Drive 파일 URL (Google Sheets)
   - PM-01 사업수행계획서 → `outputs.kickoff`: Figma 파일 URL
   - PM-02 완료보고서 (Figma URL은 별도 기록 없이 완료보고서로 첨부)
@@ -56,14 +56,14 @@
 
 ### Step 12 — TE 단계: 통합 테스트 시나리오 오케스트레이션
 
-- **입력**: 화면설계서 Figma URL (`.status outputs.wireframe`) + API 명세서 Drive URL (`.status outputs.tech-spec`) + `/templates/test-scenario-template.md`
+- **입력**: 화면설계서 Figma URL (Google Drive `.status` 파일의 `outputs.wireframe`) + API 명세서 Drive URL (`outputs.tech-spec`) + `/templates/test-scenario-template.md`
 - **처리 내용**:
   1. 웹기획팀에 TC 작성 위임 (구축 파트 L2 경유)
   2. 웹기획팀 결과물 수신 후 최종 취합 및 TC 번호 정렬
   3. 결함 관리 테이블 완성
   4. 테스트 완료 기준 최종 확정
   5. 테스트 환경 체크리스트 추가
-- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.test-scenario`에 기록
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.test-scenario`에 기록 (mcp__claude_ai_Google_Drive__create_file)
 - **성공 기준**: COM/FO/BO 3개 섹션 + 총 TC 30개 이상 + 테스트 완료 기준 섹션 존재
 - **검증 방법**: 규칙 기반 — TC 건수 집계 + 섹션 분리 확인 + `scripts/validate-doc.py`
 - **실패 시 처리**: TC 건수 미달 시 누락 기능 목록 명시 후 자동 재시도 1회 → 초과 시 에스컬레이션

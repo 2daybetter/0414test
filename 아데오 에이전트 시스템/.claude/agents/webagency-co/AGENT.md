@@ -22,7 +22,7 @@
 
 | 트리거 | 설명 |
 |--------|------|
-| 제안 파트 → 구축 파트 인계 이벤트 | `.status/제안 파트/{기회명}/.handover` 파일 생성 감지 (제안 파트 L2가 생성) |
+| 제안 파트 → 구축 파트 인계 이벤트 | Google Drive 아데오 프로젝트/{기회명}/.status/.handover 파일 생성 감지 (제안 파트 L2가 mcp__claude_ai_Google_Drive__create_file로 생성) |
 | 비서실 L1의 직접 위임 | "프로젝트 킥오프", "구축 시작" 등 지시 수신 |
 
 ---
@@ -36,7 +36,9 @@
 모든 단계 시작 전, 다음 형식의 상태 파일을 생성한다:
 
 ```
-.status/구축 파트/{프로젝트명}/.status
+Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status
+(루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
+쓰기: mcp__claude_ai_Google_Drive__create_file / 읽기: mcp__claude_ai_Google_Drive__read_file_content
 ```
 
 ```
@@ -57,7 +59,7 @@ outputs:
   test-scenario: (없음)
 ```
 
-단계 완료 시마다 `.status` 파일을 업데이트한다.
+단계 완료 시마다 Google Drive `.status` 파일을 `mcp__claude_ai_Google_Drive__create_file`로 업데이트한다.
 
 ---
 
@@ -66,7 +68,7 @@ outputs:
 - **위임 대상**: PM L3 에이전트 (`.claude/agents/webagency-co/agents/pm/AGENT.md`)
 - **입력 전달**: 인계 문서 (제안서 + 계약 개요 + 요구사항 + 납기일)
 - **납기일 처리**: `.status outputs.rfp-context` Drive URL 내용에서 납기일 자동 사용. 미기재 시 "미정 — 착수 후 합의"로 처리 후 계속 진행
-- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.kickoff` URL 존재 확인
+- **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.kickoff` URL 존재 확인
 - **다음 단계 조건**: `outputs.kickoff` URL 존재 (납기일 확인을 위한 대기 없음)
 
 ---
@@ -75,7 +77,7 @@ outputs:
 
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: WBS 문서 + 고객사 요구사항 + 벤치마킹 대상 URL
-- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.requirements` URL 존재 확인
+- **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.requirements` URL 존재 확인
 - **다음 단계 조건**: `outputs.requirements` URL 존재 + validate-doc.py 통과
 
 ---
@@ -84,7 +86,7 @@ outputs:
 
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: 요구사항정의서
-- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.ia` URL 존재 확인
+- **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.ia` URL 존재 확인
 - **다음 단계 조건**: `outputs.ia` URL 존재 + validate-doc.py 통과 (1depth 확인을 위한 대기 없음)
 
 ---
@@ -94,9 +96,9 @@ outputs:
 - **위임 대상**: 웹기획팀 L3 (화면설계서) → 완료 후 디자인팀 L3 (디자인 시스템)
 - **입력 전달**: IA 설계서 + 고객사 브랜드 가이드
 - **완료 확인**:
-  - `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe` Figma URL 존재
-  - `.status/구축 파트/{프로젝트명}/.status`의 `outputs.design-system` Drive URL 존재
-- **다음 단계 조건**: 두 URL 모두 `.status`에 기록 확인
+  - Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wireframe` Figma URL 존재
+  - Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.design-system` Drive URL 존재
+- **다음 단계 조건**: 두 URL 모두 Google Drive `.status` 파일에 기록 확인
 
 ---
 
@@ -104,7 +106,7 @@ outputs:
 
 - **위임 대상**: 개발팀 L3 에이전트
 - **입력 전달**: 화면설계서 + IA 설계서
-- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.tech-spec` URL 존재 확인
+- **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.tech-spec` URL 존재 확인
 - **다음 단계 조건**: `outputs.tech-spec` URL 존재 + validate-doc.py 통과
 
 ---
@@ -113,7 +115,7 @@ outputs:
 
 - **위임 대상**: PM L3 에이전트 (오케스트레이션) + 웹기획팀 L3 (TC 작성)
 - **입력 전달**: 화면설계서 + API 명세서
-- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.test-scenario` URL 존재 확인
+- **완료 확인**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.test-scenario` URL 존재 확인
 - **다음 단계 조건**: `outputs.test-scenario` URL 존재 + TC 30개 이상
 
 ---
