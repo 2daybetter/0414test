@@ -22,7 +22,7 @@
 
 | 트리거 | 설명 |
 |--------|------|
-| 제안 파트 → 구축 파트 인계 이벤트 | `/output/구축 파트/{프로젝트명}/.handover` 파일 생성 감지 |
+| 제안 파트 → 구축 파트 인계 이벤트 | `.status/제안 파트/{기회명}/.handover` 파일 생성 감지 (제안 파트 L2가 생성) |
 | 비서실 L1의 직접 위임 | "프로젝트 킥오프", "구축 시작" 등 지시 수신 |
 
 ---
@@ -36,7 +36,7 @@
 모든 단계 시작 전, 다음 형식의 상태 파일을 생성한다:
 
 ```
-/output/구축 파트/{프로젝트명}/.status
+.status/구축 파트/{프로젝트명}/.status
 ```
 
 ```
@@ -45,6 +45,16 @@ current_step: Step 7
 locked_by: pm
 locked_at: YYYY-MM-DDTHH:MM:SS
 last_output: (없음)
+outputs:
+  rfp-context: {Google Drive URL 또는 (없음)}
+  kickoff: (없음)
+  wbs: (없음)
+  requirements: (없음)
+  ia: (없음)
+  wireframe: (없음)
+  design-system: (없음)
+  tech-spec: (없음)
+  test-scenario: (없음)
 ```
 
 단계 완료 시마다 `.status` 파일을 업데이트한다.
@@ -55,9 +65,9 @@ last_output: (없음)
 
 - **위임 대상**: PM L3 에이전트 (`.claude/agents/webagency-co/agents/pm/AGENT.md`)
 - **입력 전달**: 인계 문서 (제안서 + 계약 개요 + 요구사항 + 납기일)
-- **납기일 처리**: rfp-context.md의 납기일 자동 사용. 미기재 시 "미정 — 착수 후 합의"로 처리 후 계속 진행
-- **완료 확인**: `/output/구축 파트/{프로젝트명}/PM/kickoff-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: kickoff 파일 존재 (납기일 확인을 위한 대기 없음)
+- **납기일 처리**: `.status outputs.rfp-context` Drive URL 내용에서 납기일 자동 사용. 미기재 시 "미정 — 착수 후 합의"로 처리 후 계속 진행
+- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.kickoff` URL 존재 확인
+- **다음 단계 조건**: `outputs.kickoff` URL 존재 (납기일 확인을 위한 대기 없음)
 
 ---
 
@@ -65,8 +75,8 @@ last_output: (없음)
 
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: WBS 문서 + 고객사 요구사항 + 벤치마킹 대상 URL
-- **완료 확인**: `/output/구축 파트/{프로젝트명}/웹기획팀/요구사항정의서-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: 요구사항정의서 파일 존재 + validate-doc.py 통과
+- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.requirements` URL 존재 확인
+- **다음 단계 조건**: `outputs.requirements` URL 존재 + validate-doc.py 통과
 
 ---
 
@@ -74,8 +84,8 @@ last_output: (없음)
 
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: 요구사항정의서
-- **완료 확인**: `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: IA 파일 존재 + validate-doc.py 통과 (1depth 확인을 위한 대기 없음)
+- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.ia` URL 존재 확인
+- **다음 단계 조건**: `outputs.ia` URL 존재 + validate-doc.py 통과 (1depth 확인을 위한 대기 없음)
 
 ---
 
@@ -84,9 +94,9 @@ last_output: (없음)
 - **위임 대상**: 웹기획팀 L3 (화면설계서) → 완료 후 디자인팀 L3 (디자인 시스템)
 - **입력 전달**: IA 설계서 + 고객사 브랜드 가이드
 - **완료 확인**:
-  - `/output/구축 파트/{프로젝트명}/웹기획팀/화면설계서-{프로젝트명}.md`
-  - `/output/구축 파트/{프로젝트명}/디자인팀/design-system-{프로젝트명}.md`
-- **다음 단계 조건**: 두 파일 모두 존재 확인
+  - `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe` Figma URL 존재
+  - `.status/구축 파트/{프로젝트명}/.status`의 `outputs.design-system` Drive URL 존재
+- **다음 단계 조건**: 두 URL 모두 `.status`에 기록 확인
 
 ---
 
@@ -94,8 +104,8 @@ last_output: (없음)
 
 - **위임 대상**: 개발팀 L3 에이전트
 - **입력 전달**: 화면설계서 + IA 설계서
-- **완료 확인**: `/output/구축 파트/{프로젝트명}/개발팀/tech-spec-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: tech-spec 파일 존재 + validate-doc.py 통과
+- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.tech-spec` URL 존재 확인
+- **다음 단계 조건**: `outputs.tech-spec` URL 존재 + validate-doc.py 통과
 
 ---
 
@@ -103,8 +113,8 @@ last_output: (없음)
 
 - **위임 대상**: PM L3 에이전트 (오케스트레이션) + 웹기획팀 L3 (TC 작성)
 - **입력 전달**: 화면설계서 + API 명세서
-- **완료 확인**: `/output/구축 파트/{프로젝트명}/PM/test-scenario-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: test-scenario 파일 존재 + TC 30개 이상
+- **완료 확인**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.test-scenario` URL 존재 확인
+- **다음 단계 조건**: `outputs.test-scenario` URL 존재 + TC 30개 이상
 
 ---
 
@@ -116,23 +126,22 @@ last_output: (없음)
 [구축 파트 보고] {프로젝트명} 문서 패키지 완성
 ─────────────────────────────────────
 완성 산출물:
-  - WBS: wbs-{프로젝트명}.gs (PM-03, Google Sheet)
+  - WBS: Google Drive URL (PM-03, Google Sheet)
   - 사업수행계획서: Figma 링크 (PM-01)
   - 완료보고서: Figma 링크 (PM-02)
-  - 요구사항정의서-{프로젝트명}.gs (AY-01, Google Sheet)
+  - 요구사항정의서: Google Drive URL (AY-01, Google Sheet)
   - 컨셉 정의서: Figma 링크 (DE-01)
   - 디자인 시안: Figma 링크 (DE-02)
-  - ia-{프로젝트명}.gs (DE-03, Google Sheet)
-  - 정책정의서-{프로젝트명}.gs (DE-04, Google Sheet)
-  - tech-spec-{프로젝트명}.gs (DE-05~07, Google Sheet)
+  - IA/메뉴 정의서: Google Drive URL (DE-03, Google Sheet)
+  - 정책정의서: Google Drive URL (DE-04, Google Sheet)
+  - 테이블정의서·ERD·프로그램 목록·API 정의서: Google Drive URL (DE-05~07, Google Sheet)
   - 화면설계서/SB: Figma 링크 (DE-08)
   - 디자인 시스템: Figma 링크 (IM-01)
   - 디자인 화면: Figma 링크 (IM-02)
-  - 개발가이드-{프로젝트명}.gs (IM-03, Google Sheet)
+  - 개발가이드: Google Drive URL (IM-03, Google Sheet)
   - Github 운영 소스 링크 (IM-04)
-  - test-scenario-{프로젝트명}.gs (TE-03, Google Sheet)
+  - 통합 테스트 시나리오: Google Drive URL (TE-03, Google Sheet)
 
-전체 경로: /output/구축 파트/{프로젝트명}/
 이사님 검토 요청 필요 여부: 예 (사업수행계획서 포함)
 ─────────────────────────────────────
 ```

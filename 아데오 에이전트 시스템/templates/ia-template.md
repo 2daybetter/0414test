@@ -3,7 +3,8 @@
 > 문서코드: DE-02  
 > 버전: v1.0  
 > 작성일: YYYY-MM-DD  
-> 작성자: [작성자명]
+> 작성자: [작성자명]  
+> 디자인 시스템: `/templates/krds-design-system.md`
 
 ---
 
@@ -32,8 +33,7 @@
 
 ## 1. IA 설계 기준
 
-> **출력 형식**: IA 설계서는 Google Apps Script를 통해 **Google Sheets**로 생성한다.  
-> 로컬 `.gs` 스크립트를 Google Drive → Apps Script에서 실행하면 스프레드시트가 자동 생성된다.
+> **출력 형식**: IA 설계서는 `scripts/generators/gen_ia.py`로 `.xlsx`를 생성한 뒤 Google Drive MCP로 업로드하여 **Google Sheets**로 제공한다.
 
 ### 1.1 화면 ID 체계
 
@@ -155,3 +155,78 @@
 | 계층 구조 | 메뉴 계층을 URL에 반영 |
 | RESTful | 목록: /resource, 상세: /resource/:id, 등록: /resource/new |
 | 관리자 prefix | 모든 BO URL은 /admin으로 시작 |
+
+---
+
+## 6. Google Sheets 구조 및 스타일
+
+> `ia-generator` 스킬이 `scripts/generators/gen_ia.py`로 파일을 생성할 때 아래 규격을 적용한다.
+
+### 시트 구성
+
+| 시트명 | 내용 | 컬럼 |
+|--------|------|------|
+| `FO_IA` | FO 전체 화면 목록 | IA_ID / 1depth / 1depth약어 / 2depth / 2depth약어 / XY / 3depth / Type / DB / 화면ID / 기능정의 / URL / SEO Title / SEO Description / SEO Keyword |
+| `BO_IA` | BO 전체 화면 목록 | IA_ID / 1depth / 1depth약어 / 2depth / 2depth약어 / XY / 3depth / Type / DB / 화면ID / 기능정의 / URL |
+| `화면목록` | FO+BO 통합 화면ID 인덱스 | 시스템 / 화면ID / 화면명 / URL / Type / 기능정의 |
+| `집계` | 화면 수 집계표 | 구분 / Page / Layer Popup / Popup / 합계 |
+
+### 셀 스타일 규칙
+
+| 행 구분 | 배경 컬러 | 폰트 컬러 | 굵기 | 정렬 |
+|---------|---------|---------|------|------|
+| 헤더 행 (1행) | `#29292A` | `#FFFFFF` | Bold | Center |
+| 데이터 행 (2행~) | 없음 | 기본 | 기본 | 기본 |
+
+> **내용 셀 배경 없음**: 데이터가 들어가는 모든 셀은 배경색을 지정하지 않는다.
+
+### gen_ia.py JSON 입력 스키마
+
+```json
+{
+  "project_name": "프로젝트명",
+  "client_name": "고객사명",
+  "version": "v1.0",
+  "doc_date": "YYYY-MM-DD",
+  "author": "작성자",
+  "reviewer": "검토자",
+  "fo_ia": [
+    {
+      "ia_id": "FO-1-01",
+      "depth1": "홈",
+      "depth1_abbr": "H",
+      "depth2": "",
+      "depth2_abbr": "0",
+      "xy": "H0",
+      "depth3": "",
+      "type": "Page",
+      "db": "N",
+      "screen_id": "FO_H0_001",
+      "function": "메인 페이지",
+      "url": "/",
+      "seo_title": "사이트명",
+      "seo_desc": "사이트 설명",
+      "seo_keyword": "키워드1, 키워드2"
+    }
+  ],
+  "bo_ia": [
+    {
+      "ia_id": "BO-1-01",
+      "depth1": "대시보드",
+      "depth1_abbr": "D",
+      "depth2": "",
+      "depth2_abbr": "0",
+      "xy": "D0",
+      "depth3": "",
+      "type": "Page",
+      "db": "Y",
+      "screen_id": "BO_D0_001",
+      "function": "관리자 대시보드",
+      "url": "/admin"
+    }
+  ],
+  "summary": {
+    "fo": { "page": 0, "layer_popup": 0, "popup": 0, "total": 0 },
+    "bo": { "page": 0, "layer_popup": 0, "popup": 0, "total": 0 }
+  }
+}

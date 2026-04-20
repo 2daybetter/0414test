@@ -23,7 +23,7 @@
 |--------|---------|
 | 구축 파트 L2가 Step 11 (DE-3) 위임 | 화면설계서 + 디자인 시스템 완료 후 기술 설계 시작 |
 
-**사전 조건**: 웹기획팀의 화면설계서 + 디자인팀의 design-system 파일이 모두 존재해야 활성화된다.
+**사전 조건**: `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe` Figma URL + `outputs.design-system` Drive URL 이 모두 존재해야 활성화된다.
 
 ---
 
@@ -31,13 +31,13 @@
 
 ### Step 11 — DE 단계-3: 기술 설계 문서 작성
 
-> ⚠️ **핵심 분기 확인 필요**: 기술 스택 확정 전 사람 확인 요청
-
-- **입력**: 화면설계서(Step 10) + 디자인 시스템(Step 10 디자인팀 출력) + 요구사항정의서(Step 8)
+- **입력**: 화면설계서 Figma URL (`.status outputs.wireframe`) + 디자인 시스템 Drive URL (`.status outputs.design-system`) + 요구사항정의서 Drive URL (`.status outputs.requirements`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
   1. 화면설계서에서 필요 데이터 항목 추출
-  2. **[확인 요청]** 기술 스택(프론트엔드/백엔드/DB/인프라) 방향 안 제시 후 승인 대기
-  3. 승인 후 다음 4개 문서를 통합 tech-spec으로 작성:
+  2. **기술 스택 결정 (분기)**:
+     - **`outputs.rfp-context` URL 존재 시 (자동 실행 모드)**: `mcp__claude_ai_Google_Drive__read_file_content`로 rfp-context 읽어 "기술 스택 요구사항" 섹션 기반으로 확인 없이 자동 결정. 미기재 항목은 요구사항정의서 제약사항 기반으로 합리적 선택
+     - **`outputs.rfp-context` URL 미존재 시 (수동 모드)**: `[확인 요청]` 블록 출력 후 승인 대기
+  3. 다음 4개 문서를 통합 tech-spec으로 작성:
 
   **DE-05 DB 설계서**:
   - 주요 엔티티(테이블) 목록 + 핵심 컬럼 정의
@@ -54,7 +54,7 @@
   - 주요 요청/응답 파라미터 명세 (JSON 구조)
   - 에러 코드 정의 (400 / 401 / 403 / 404 / 500)
 
-- **출력 경로**: `/output/구축 파트/{프로젝트명}/개발팀/tech-spec-{프로젝트명}.gs` (Google Sheet)
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.tech-spec`에 기록
 - **성공 기준**: 테이블정의서(테이블 5개 이상) + 프로그램 목록 + API 정의서(엔드포인트 10개 이상) 3개 항목 모두 존재
 - **검증 방법**: `scripts/validate-doc.py` 실행 + LLM 자기 검증 (4개 섹션 + API 엔드포인트 수 확인)
 - **실패 시 처리**: 자동 재시도 1회 → 초과 시 누락 항목 명시 후 구축 파트 L2 에스컬레이션
@@ -73,11 +73,10 @@
 
 ## 핵심 분기 확인 기준
 
-이 에이전트에서 사람 확인이 필요한 시점은 **1곳** 이다:
-
 | 시점 | 확인 내용 | 처리 방법 |
 |------|---------|---------|
-| **Step 11 — 기술 스택 확정 전** | 프론트엔드/백엔드/DB/인프라 스택 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 후 tech-spec 전체 작성 재개 |
+| **Step 11 — 자동 실행 모드** (`outputs.rfp-context` URL 존재) | 기술 스택 방향 | rfp-context Drive 파일 읽어 "기술 스택 요구사항" 기반 자동 결정. 확인 없이 진행 |
+| **Step 11 — 수동 모드** (`outputs.rfp-context` URL 미존재) | 프론트엔드/백엔드/DB/인프라 스택 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 후 tech-spec 전체 작성 재개 |
 
 **[확인 요청] 출력 형식**:
 ```

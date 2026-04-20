@@ -44,7 +44,7 @@
 
 ### Step A-3: 출력 및 저장
 
-- **출력 경로**: `/output/제안 파트/{기회명}/영업팀/기회분석-{기회명}.md`
+- **출력 방법**: 내용 작성 후 `mcp__claude_ai_Google_Drive__create_file`로 업로드 → 반환된 URL을 `.status/제안 파트/{기회명}/.status`의 `outputs.opportunity-analysis`에 기록
 - **구글 드라이브**: 제안 목록 스프레드시트에 해당 건 추가 — 매일 9시 자동 업데이트
 - **검증**: validate-doc.py 실행 (`기회분석` 유형)
 - **완료 후**: 제안 파트 L2에 완료 보고, `.status` 파일 업데이트

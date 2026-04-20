@@ -1,6 +1,6 @@
 ---
 name: project-kickoff
-description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 Google Sheets(Google Drive)로, 사업수행계획서(PM-01)·인력계획서(PM-02)를 마크다운으로 작성한다. WBS는 Google Apps Script를 생성하여 Google Drive에서 스프레드시트로 실행할 수 있도록 한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "사업수행계획서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
+description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 gen_wbs.py → Google Drive MCP로 생성하고, 사업수행계획서(PM-01)는 Figma MCP로 작성한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "사업수행계획서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
 ---
 
 # project-kickoff
@@ -10,9 +10,8 @@ description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬.
 제안 파트 인계 문서 기반으로 아데오 표준 착수 문서 패키지(PM-01~03)를 생성한다.
 
 **출력 형식 원칙**:
-- **WBS (PM-03)**: Excel 금지 → **Google Sheets** (Google Apps Script로 자동 생성)
+- **WBS (PM-03)**: Excel 금지 → **Google Sheets** (`scripts/generators/gen_wbs.py` 실행 → Google Drive MCP 업로드)
 - **사업수행계획서 (PM-01)**: Figma 파일 (Figma MCP 사용)
-- **완료보고서 (PM-02)**: Figma 파일 (Figma MCP 사용)
 
 반드시 `/templates/kickoff-template.md` 를 참조하여 내용을 구성한다.
 
@@ -29,7 +28,7 @@ description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬.
 | 고객사명 | 인계 문서에서 추출 |
 | 계약 금액 (선택) | 있으면 반영 |
 
-납기일이 없으면 **[확인 요청]** 을 출력하고 중단.
+납기일이 없으면 `.status outputs.rfp-context` Drive URL 내용에서 재확인. 없으면 "미정 — 착수 후 합의"로 처리하고 계속 진행 (중단 금지).
 
 ---
 
@@ -38,7 +37,9 @@ description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬.
 납기일 기준 역산하여 6단계 시작/종료일 초안 계산.  
 세부 일정 계산 규칙은 `references/kickoff-rules.md` 참조.
 
-> ⚠️ 계산 후 반드시 **[확인 요청]** 으로 사람 승인을 받는다. 승인 전 WBS 작성 금지.
+**일정 확인 분기**:
+- **`outputs.rfp-context` URL 존재 시 (자동 실행 모드)**: 계산된 일정 그대로 WBS 작성 진행. 확인 요청 없음.
+- **`outputs.rfp-context` URL 미존재 시 (수동 모드)**: 아래 [확인 요청] 출력 후 승인 대기.
 
 **[확인 요청] 출력 형식**:
 ```
@@ -62,88 +63,23 @@ description: 구축 프로젝트 착수 문서(PM-01~03)를 생성하는 스킬.
 
 ---
 
-### Step 3: WBS Google Apps Script 생성 (PM-03)
+### Step 3: WBS Google Sheets 생성 (PM-03)
 
-승인된 일정 기준으로 Google Sheets WBS 생성 스크립트를 작성한다.  
-스크립트 상세 규칙은 `references/kickoff-rules.md` 의 스프레드시트 섹션 참조.
+승인된 일정 기준으로 프로젝트 데이터를 JSON으로 구성하고 `scripts/generators/gen_wbs.py`로 `.xlsx`를 생성한 뒤 Google Drive MCP로 업로드한다.
 
-#### 스크립트 생성 규칙
+시트 구조 및 스타일 규칙: `templates/kickoff-template.md` **Google Sheets 구조 및 스타일** 섹션 참조.
 
-1. **파일명**: `WBS_{프로젝트명}_{YYYYMMDD}`
-2. **시트 구성**:
-   - `WBS` 시트: 전체 작업 목록 (단계 / 코드 / 대분류 / 중분류 / 담당팀 / 산출물코드 / 산출물명 / 시작일 / 종료일 / 기간 / 상태)
-   - `마일스톤` 시트: 6단계 주요 일정 + 간트 차트 바
-   - `산출물` 시트: PM-01~OP-05 전체 산출물 목록
-   - `리스크` 시트: 리스크 관리 목록
-3. **셀 서식**: 단계별 색상 코딩 (아래 색상 규칙 참조)
-4. **자동화**: 종료일·기간 자동 계산 수식 포함
-
-#### 단계별 색상 코딩
-
-| 단계 | 헤더 배경 | 행 배경 | 텍스트 |
-|------|---------|--------|-------|
-| PM (착수) | `#1A56DB` | `#EBF5FF` | `#1E3A5F` |
-| AY (분석) | `#0694A2` | `#E0F7FA` | `#004D40` |
-| DE (설계) | `#057A55` | `#E6F4EA` | `#1B5E20` |
-| IM (구현) | `#E3A008` | `#FFF8E1` | `#4E3B00` |
-| TE (테스트) | `#D03801` | `#FFF3E0` | `#6D1700` |
-| OP (오픈) | `#7E3AF2` | `#F5F3FF` | `#3B0764` |
-| 헤더 행 | `#1F2937` | — | `#FFFFFF` |
-
-#### 출력 스크립트 예시 구조
-
-```javascript
-function createWBS() {
-  // 1. 새 스프레드시트 생성
-  var ss = SpreadsheetApp.create("WBS_{프로젝트명}_{YYYYMMDD}");
-  
-  // 2. WBS 시트 구성
-  var wbsSheet = ss.getSheets()[0];
-  wbsSheet.setName("WBS");
-  // 헤더 행 설정 + 색상 적용
-  // 단계별 데이터 입력 + 색상 적용
-  // 수식 설정 (기간 자동 계산 등)
-  
-  // 3. 마일스톤 시트 생성 + 간트 차트
-  var msSheet = ss.insertSheet("마일스톤");
-  
-  // 4. 산출물 시트 생성
-  var delivSheet = ss.insertSheet("산출물");
-  
-  // 5. 리스크 시트 생성
-  var riskSheet = ss.insertSheet("리스크");
-  
-  // 6. 완성 URL 출력
-  Logger.log("WBS 생성 완료: " + ss.getUrl());
-}
-```
-
-실제 생성 시에는 프로젝트 데이터(마일스톤, 산출물 목록, 리스크 등)가 모두 채워진 완전한 스크립트를 생성한다.
+**실행 순서**:
+1. 마일스톤·산출물·리스크 데이터를 JSON 스키마(`kickoff-template.md` 참조)에 맞게 구성
+2. `scripts/generators/gen_wbs.py` 실행 → `WBS_{프로젝트명}_{YYYYMMDD}.xlsx` 생성
+3. Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로 업로드
+4. 반환된 URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wbs`에 기록
 
 ---
 
-### Step 4: Apps Script 실행 안내
+### Step 4: 사업수행계획서 작성 (PM-01)
 
-스크립트 생성 후 다음 실행 방법을 함께 제공한다:
-
-```
-[WBS Google Sheets 생성 방법]
-──────────────────────────────────────
-1. Google Drive (drive.google.com) 접속
-2. 새로 만들기 → Google Apps Script 클릭
-3. 프로젝트명: "WBS_{프로젝트명}" 입력
-4. 아래 스크립트 코드를 에디터에 붙여넣기
-5. ▶ 실행 (createWBS 함수) 클릭
-6. Google 계정 권한 허용
-7. 실행 완료 후 Drive에서 생성된 스프레드시트 확인
-──────────────────────────────────────
-```
-
----
-
-### Step 5: 사업수행계획서 작성 (PM-01)
-
-마크다운 형식으로 작성한다.
+Figma MCP(`mcp__claude_ai_Figma__create_new_file`)로 Figma 파일로 작성한다.
 
 | 항목 | 내용 |
 |------|------|
@@ -153,11 +89,13 @@ function createWBS() {
 | 산출물 계획 | 문서 코드별 생성 계획 |
 | 승인 요청 | 이사님 착수 승인 항목 |
 
+생성된 Figma URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.kickoff`에 기록.
+
 ---
 
-### Step 6: 인력계획서 작성 (PM-02)
+### Step 5: 인력계획서 작성 (PM-02)
 
-마크다운 형식으로 작성한다.
+Figma MCP(`mcp__claude_ai_Figma__use_figma`)로 사업수행계획서 Figma 파일에 추가 페이지로 작성한다.
 
 | 항목 | 내용 |
 |------|------|
@@ -167,20 +105,18 @@ function createWBS() {
 
 ---
 
-### Step 7: 출력 및 검증
+### Step 6: 출력 및 검증
 
 **출력 파일 목록**:
 
-| 산출물 | 형식 | 경로 |
-|--------|------|------|
-| PM-03 WBS | Google Apps Script (.gs) | `/output/구축 파트/{프로젝트명}/PM/wbs-{프로젝트명}.gs` |
-| PM-01 사업수행계획서 | Figma (Figma MCP) | Figma 파일 링크 제공 |
-| PM-02 완료보고서 | Figma (Figma MCP) | Figma 파일 링크 제공 |
+| 산출물 | 형식 | 저장 위치 |
+|--------|------|---------|
+| PM-03 WBS | Google Sheets (Google Drive) | `.status outputs.wbs` Drive URL |
+| PM-01 사업수행계획서 | Figma (Figma MCP) | `.status outputs.kickoff` Figma URL |
 
 **성공 기준**:
-- WBS Apps Script: PM/AY/DE/IM/TE/OP 6단계 데이터 + 4개 시트 구성 + 납기일 반영
+- WBS: PM/AY/DE/IM/TE/OP 6단계 데이터 + 4개 시트 구성 + 납기일 반영 + Google Drive 파일 URL 존재
 - 사업수행계획서: Figma에 프로젝트 개요 + 조직 + 마일스톤 + 산출물 계획 섹션 존재
-- 완료보고서: Figma에 팀 구성 + 단계별 투입 섹션 존재
 
 ---
 
@@ -190,4 +126,4 @@ function createWBS() {
 |---------|------|
 | 납기일 없음 | [확인 요청] 출력 후 중단 |
 | 일정 역산 불가 (납기 너무 촉박) | 최소 일정 경고 후 사람 판단 요청 |
-| Apps Script 생성 오류 | 재시도 1회 → 초과 시 CSV 대체 출력 후 에스컬레이션 |
+| gen_wbs.py 실행 오류 또는 Drive 업로드 실패 | 재시도 1회 → 초과 시 에스컬레이션 |

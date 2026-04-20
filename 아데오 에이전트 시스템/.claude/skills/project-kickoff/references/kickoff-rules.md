@@ -2,37 +2,9 @@
 
 ## 스프레드시트 출력 규칙 (Google Sheets 전용)
 
-> WBS(PM-03)는 Excel로 작성하지 않는다. 반드시 Google Sheets(Google Drive)에서 작업한다.  
-> Google Sheets MCP가 없는 경우 Google Apps Script를 생성하여 제공한다.
-
-### WBS Apps Script 생성 규칙
-
-#### 완성 스크립트 구조
-
-```javascript
-function createWBS() {
-  var projectName = "{프로젝트명}";
-  var clientName  = "{고객사명}";
-  var deadline    = "{YYYY-MM-DD}";
-
-  // ── 스프레드시트 생성 ──────────────────────────────────────
-  var ss = SpreadsheetApp.create("WBS_" + projectName + "_" + Utilities.formatDate(new Date(), "Asia/Seoul", "yyyyMMdd"));
-  ss.setSpreadsheetLocale("ko");
-  ss.setSpreadsheetTimeZone("Asia/Seoul");
-
-  buildWBSSheet(ss, projectName, clientName);
-  buildMilestoneSheet(ss, projectName);
-  buildDeliverableSheet(ss);
-  buildRiskSheet(ss);
-
-  // 기본 Sheet1 제거
-  var defaultSheet = ss.getSheetByName("시트1") || ss.getSheetByName("Sheet1");
-  if (defaultSheet) ss.deleteSheet(defaultSheet);
-
-  Logger.log("✅ WBS 생성 완료: " + ss.getUrl());
-  SpreadsheetApp.getUi().alert("WBS 생성 완료!\n" + ss.getUrl());
-}
-```
+> WBS(PM-03)는 Excel로 작성하지 않는다.  
+> `scripts/generators/gen_wbs.py`로 `.xlsx`를 생성한 뒤 Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로 업로드한다.  
+> Google Apps Script 생성 방식은 사용하지 않는다.
 
 #### WBS 시트 컬럼 구조
 
@@ -83,23 +55,6 @@ function createWBS() {
 | 정렬 | 가운데 |
 | 행 고정 | 1행 고정 (freezeRows) |
 | 필터 | 전체 헤더에 필터 적용 |
-
-#### Apps Script 실행 안내 텍스트 (항상 포함)
-
-스크립트 출력 후 반드시 아래 안내문을 함께 출력한다:
-
-```
-[WBS Google Sheets 생성 방법]
-──────────────────────────────────────────────────────
-① Google Drive (drive.google.com) 접속
-② 우상단 [+ 새로 만들기] → [더보기] → [Google Apps Script] 클릭
-③ 프로젝트 제목을 "WBS_{프로젝트명}"으로 변경
-④ 기존 코드를 모두 지우고 아래 스크립트를 붙여넣기
-⑤ 상단 [▶ 실행] 클릭 → 함수 선택창에서 createWBS 선택
-⑥ Google 계정 권한 허용 (스프레드시트 생성 권한)
-⑦ 실행 완료 후 Google Drive에서 WBS 파일 확인
-──────────────────────────────────────────────────────
-```
 
 ---
 

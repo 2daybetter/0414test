@@ -3,7 +3,78 @@
 > 문서코드: DE-03  
 > 버전: v1.0  
 > 작성일: YYYY-MM-DD  
-> 작성자: [작성자명]
+> 작성자: [작성자명]  
+> 디자인 시스템: `/templates/krds-design-system.md`
+
+---
+
+## Figma 파일 구조
+
+> `wireframe-spec` 스킬이 Figma MCP로 파일을 생성할 때 아래 규격을 적용한다.
+
+### 페이지 구성
+
+| 페이지명 | 내용 |
+|---------|------|
+| `FO (Front Office)` | FO 전체 화면. Section = 1depth 메뉴, Frame = 2depth Page 타입 화면 |
+| `BO (Back Office)` | BO 전체 화면 (동일 구조) |
+| `Components` | GNB, Footer, BO Sidebar, 공통 모달/Toast 등 재사용 컴포넌트 |
+
+### Frame 규격
+
+| 구분 | 크기 | Section 간격 | Frame 간격 | 배경 |
+|------|------|------------|----------|------|
+| FO Frame | 1440 × 1024 px | 1200px (좌→우) | 800px (위→아래) | `#FFFFFF` |
+| BO Frame | 1440 × 900 px | 1200px (좌→우) | 800px (위→아래) | `#FFFFFF` |
+
+### 명칭 규칙
+
+| 요소 | 규칙 | 예시 |
+|------|------|------|
+| Section명 | 1depth 메뉴명 그대로 | `회사소개`, `사업영역` |
+| Frame명 | `{화면ID} {화면명}` | `FO_CV_001 비전/미션` |
+
+### FO 공통 레이어 구조
+
+```
+Frame (FO_XY_NNN 화면명)
+├── Header (GNB)
+│   ├── Logo (Rectangle 120×40)
+│   ├── Navigation (Auto Layout, 메뉴명 Text)
+│   └── Auth Buttons (로그인 / 회원가입 Button)
+├── Content Area
+│   └── {화면 타입별 구성 — 하단 화면 설계 섹션 참조}
+└── Footer
+    ├── Company Info (Text)
+    └── Links (Auto Layout)
+```
+
+### BO 공통 레이어 구조
+
+```
+Frame (BO_XY_NNN 화면명)
+├── Sidebar (width: 220px)
+│   ├── Logo + 시스템명
+│   └── Menu List (1depth / 2depth 트리)
+├── Top Bar (height: 56px)
+│   ├── 페이지 타이틀
+│   ├── 알림 아이콘
+│   └── 관리자 프로필
+└── Content Area
+    └── {화면 타입별 구성}
+```
+
+### 어노테이션 타입
+
+| 타입 | 색상 | 용도 |
+|------|------|------|
+| 화면 정보 | 노란색 | 화면ID, 화면명, URL |
+| 기능 설명 | 파란색 | 컴포넌트별 기능 설명 |
+| 조건 분기 | 분홍색 | 로그인 여부, 상태 분기 등 조건 기술 |
+
+### 디자인 토큰
+
+스타일 기준: `templates/krds-design-system.md` 참조. 고객사 브랜드 가이드 존재 시 Primary Color만 대체하고 나머지 토큰(타이포·스페이싱·Neutral·Semantic)은 KRDS 기준 유지.
 
 ---
 

@@ -32,15 +32,15 @@
 
 ### Step 8 — AY 단계: 요구사항정의서 작성
 
-- **입력**: WBS 문서(Step 7 출력) + 고객사 요구사항 + 벤치마킹 대상 URL
+- **입력**: WBS 문서(`.status/구축 파트/{프로젝트명}/.status`의 `outputs.wbs` Drive URL) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시) + 벤치마킹 대상 URL
 - **처리 내용**:
-  1. `strategy-analyzer` 스킬 즉시 참조하여 현황 분석 수행
+  1. `strategy-analyzer` 스킬 즉시 참조. `outputs.rfp-context` URL 존재 시 `mcp__claude_ai_Google_Drive__read_file_content`로 내용 읽어 "고객사 현황" 및 "요구사항" 섹션을 분석 입력으로 사용
   2. 고객사 현황 분석 및 경쟁사 벤치마킹 (최소 3곳)
   3. 기능 요구사항 목록 작성 (최소 10개, 우선순위 포함)
   4. 비기능 요구사항 정의 (성능 / 보안 / 반응형 3개 분류)
   5. 서비스 범위 확정 (포함/제외 명시)
   6. 서비스 컨셉 방향 정리
-- **출력 경로**: `/output/구축 파트/{프로젝트명}/웹기획팀/요구사항정의서-{프로젝트명}.md`
+- **출력 방법**: `strategy-analyzer` 스킬 → `mcp__claude_ai_Google_Drive__create_file` 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.requirements`에 기록
 - **성공 기준**: 기능 요구사항 10개 이상 + 비기능 3개 분류 섹션 + 범위 확정 섹션 + 컨셉 방향 포함
 - **검증 방법**: `scripts/validate-doc.py` 실행 후 스키마 통과 확인
 - **실패 시 처리**: 자동 재시도 1회 → 초과 시 구축 파트 L2 에이전트 에스컬레이션
@@ -49,10 +49,10 @@
 
 ### Step 9 — DE 단계-1: IA 설계서 작성
 
-- **입력**: 요구사항정의서(Step 8 출력) + `/templates/ia-template.md` + rfp-context.md (현재 사이트 구조 섹션)
+- **입력**: 요구사항정의서(`.status outputs.requirements` Drive URL) + `/templates/ia-template.md` + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
   1. `ia-generator` 스킬 즉시 참조
-  2. rfp-context.md의 "현재 사이트 구조" 섹션 참조하여 기존 메뉴 구조 파악
+  2. rfp-context Drive URL이 있으면 `mcp__claude_ai_Google_Drive__read_file_content`로 읽어 "현재 사이트 구조" 섹션 참조
   3. 요구사항 기반 FO(Front Office) IA 초안 작성
      - 1depth 메뉴 최소 4개 도출 (rfp-context.md 현황 + 요구사항 기반)
      - **자동 실행 모드**: 승인 없이 1depth → 2depth → 3depth 전체 연속 작성
@@ -63,7 +63,7 @@
   6. Page 타입 화면 전체에 URL 설계 및 SEO 메타 정의
   7. DB 연동 여부 표시
   8. 화면 수 집계표 생성 (FO/BO/합계)
-- **출력 경로**: `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.md`
+- **출력 방법**: `ia-generator` 스킬 → `mcp__claude_ai_Google_Drive__create_file` 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.ia`에 기록
 - **성공 기준**: FO/BO 분리 테이블 + 1depth 4개 이상 + 화면 수 집계표 + 모든 Page 타입에 URL 명시
 - **검증 방법**: `scripts/validate-doc.py` 실행 → FO/BO 섹션 분리·1depth 수·집계표 존재 확인
 - **실패 시 처리**: 자동 재시도 최대 2회 → 초과 시 실패 리포트 생성 후 에스컬레이션
@@ -74,7 +74,7 @@
 
 > ⚠️ **파워포인트·마크다운 파일로 작성하지 않는다.** 반드시 Figma MCP를 사용하여 Figma 파일로 생성한다.
 
-- **입력**: IA 설계서(Step 9 출력) + 고객사 브랜드 가이드(있는 경우) + 프로젝트명
+- **입력**: IA 설계서(`.status outputs.ia` Drive URL → `mcp__claude_ai_Google_Drive__read_file_content`로 읽기) + 고객사 브랜드 가이드(있는 경우) + 프로젝트명
 - **처리 내용**:
   1. `wireframe-spec` 스킬 즉시 참조
   2. IA 파일에서 FO/BO 1depth · 2depth 메뉴 구조 추출
@@ -88,8 +88,7 @@
   7. 각 Frame에 어노테이션 추가: 화면 정보(노란색) + 기능 설명(파란색) + 조건 분기(분홍색)
   8. LLM 자기 검증: IA Page 타입 화면 수 vs Figma Frame 수 일치 확인
 - **출력**:
-  - Figma 파일 URL (생성된 파일 링크)
-  - 인덱스 파일: `/output/구축 파트/{프로젝트명}/웹기획팀/화면설계서-{프로젝트명}.md` (Figma URL + 화면 목록 테이블 포함)
+  - Figma MCP로 화면설계서(DE-08) 파일 생성 → Figma URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.wireframe`에 기록
 - **성공 기준**: Figma 파일 생성 완료 + IA 전체 Page 타입 화면 커버 + Section/Frame 구조 일치
 - **검증 방법**: LLM 자기 검증 — IA Page 수 vs Frame 수 비교 후 통과/실패 판정
 - **실패 시 처리**: Figma MCP 오류 시 1회 재시도 → 자기 검증 2회 실패 시 미완성 Frame 목록 명시 후 에스컬레이션
@@ -98,14 +97,14 @@
 
 ### Step 12 — TE 단계: 테스트 시나리오 작성 지원
 
-- **입력**: 화면설계서(Step 10 출력) + API 명세서(Step 11 출력) + `/templates/test-scenario-template.md`
+- **입력**: 화면설계서 Figma URL (`.status outputs.wireframe`) + API 명세서 Drive URL (`.status outputs.tech-spec`) + `/templates/test-scenario-template.md`
 - **처리 내용**:
   1. TC ID 체계(TC_COM / TC_FO / TC_BO_NNN) 기준 통합 테스트 시나리오(TE-03) 작성
   2. COM (공통 기능) + FO (Front Office) + BO (Back Office) 3개 섹션 분리
   3. 각 TC 항목: 케이스명 / 화면ID / 사전조건 / 테스트 절차 / 기대 결과 / PC·MO 수행 결과
   4. 결함 관리 테이블 초안 생성
   5. 테스트 완료 기준 명시
-- **출력 경로**: `/output/구축 파트/{프로젝트명}/PM/test-scenario-{프로젝트명}.md` (PM 팀 경로로 저장)
+- **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 `.status/구축 파트/{프로젝트명}/.status`의 `outputs.test-scenario`에 기록
 - **성공 기준**: COM/FO/BO 3개 섹션 + 총 TC 30개 이상 + 각 TC 4항목 완비
 - **검증 방법**: 규칙 기반 — TC 건수 집계 + 섹션 존재 확인
 - **실패 시 처리**: 자동 재시도 최대 2회 → TC 건수 미달 시 누락 기능 목록 명시 후 에스컬레이션

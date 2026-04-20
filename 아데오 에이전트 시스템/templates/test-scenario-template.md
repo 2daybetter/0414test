@@ -3,7 +3,8 @@
 > 문서코드: TE-02  
 > 버전: v1.0  
 > 작성일: YYYY-MM-DD  
-> 작성자: [작성자명]
+> 작성자: [작성자명]  
+> 디자인 시스템: `/templates/krds-design-system.md`
 
 ---
 

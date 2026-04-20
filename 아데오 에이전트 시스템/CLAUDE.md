@@ -45,7 +45,7 @@
 [입력: 고객사 URL + RFP 문서]
         ↓
 [Step 0: rfp-analyzer 스킬 실행]
-  → /output/제안 파트/{기회명}/rfp-context.md 생성
+  → rfp-context를 Google Drive MCP로 업로드 → URL을 .status/제안 파트/{기회명}/.status 의 outputs.rfp-context 에 기록
         ↓
 [제안 파트 자동 실행 — proposal-co L2]
   Step A: 기회 분석서 자동 생성 (rfp-context.md 기반)
@@ -92,6 +92,8 @@
 | 프로젝트 킥오프 / WBS | 구축 파트 → PM L3 | `project-kickoff` |
 | IA 설계서 작성 | 구축 파트 → 웹기획팀 L3 | `ia-generator` |
 | 화면설계서 작성 | 구축 파트 → 웹기획팀 L3 | `wireframe-spec` |
+| 주간업무 보고서 | 비서실 L1 직접 수행 | `weekly-report` |
+| 월간업무 보고서 | 비서실 L1 직접 수행 | `monthly-report` |
 | KPI 보고서 (주간/월간) | 비서실 L1 직접 수행 | `kpi-reporter` |
 | 운영·마케팅 업무 | 운영 파트 L2 | — |
 | 기술 리서치 | 연구소 L2 | — |
@@ -145,7 +147,7 @@
 ### 모든 산출물에 적용
 
 1. **템플릿 참조 필수**: 산출물 생성 전 반드시 `/templates/` 내 해당 템플릿 참조
-2. **저장 경로**: `/output/{자회사}/{프로젝트명 또는 팀}/{문서유형}-{날짜 또는 프로젝트명}.md`
+2. **저장 위치**: Google Sheet 산출물은 Google Drive MCP로, Figma 산출물은 Figma MCP로 직접 생성한다. 로컬 `.md` 파일로 저장 금지.
 3. **임의 포맷 금지**: 템플릿 구조를 임의로 변경하지 말 것
 4. **문서 코드 준수**: WBS 산출물 코드(PM-01~OP-05) 헤더에 명시
 5. **버전 관리**: 모든 문서는 버전(v1.0~), 작성일, 작성자 명시
@@ -161,8 +163,8 @@
 | 통합 테스트 시나리오 | `/templates/test-scenario-template.md` | TE-03 |
 | 제안서 | `/templates/proposal-template.md` | PR-01 (Figma 프리젠테이션 출력) |
 | 정책자금 사업제안서 | `/templates/policy-fund-template.md` | PR-02 (Figma 프리젠테이션 출력) |
-| 주간 보고서 | `/templates/weekly-report-template.md` | PM-WR |
-| 월간 보고서 | `/templates/monthly-report-template.md` | PM-MR |
+| 주간 보고서 (Google Sheet 탭) | `/templates/weekly-report-template.md` | PM-WR |
+| 월간 보고서 (Google Sheet 탭) | `/templates/monthly-report-template.md` | PM-MR |
 | **KRDS 디자인 시스템** | `/templates/krds-design-system.md` | — (모든 시각 산출물 공통 참조) |
 
 ---
@@ -201,25 +203,18 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 | 폰트 굵기 | Bold |
 | 텍스트 정렬 | Center (수평) |
 
-Google Apps Script로 생성하는 경우 시트 생성 직후 아래 코드를 반드시 포함한다:
-
-```javascript
-// 헤더 행 스타일 적용
-var headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
-headerRange.setBackground('#29292A');
-headerRange.setFontColor('#FFFFFF');
-headerRange.setFontWeight('bold');
-headerRange.setHorizontalAlignment('center');
-```
+헤더 행 외 **모든 데이터(내용) 셀은 배경색을 지정하지 않는다.**  
+단계 구분 행(WBS 등에서 PM/AY/DE/IM/TE/OP 섹션 구분용)에만 단계별 색상을 적용하고, 개별 데이터 행은 배경 없음.
 
 ---
 
 ### 파일 생성 원칙
 
-1. **MCP 직접 생성**: 산출물은 텍스트 내용 확인 없이 Figma MCP 또는 Google Drive MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
-2. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
-3. **output 폴더 격리**: 프로젝트별 산출물은 `/output/{파트}/{프로젝트명}/` 하위에만 저장. 이 경계를 벗어난 경로에 파일을 생성하지 않는다.
-4. **output 폴더는 임시**: `/output/` 폴더는 향후 삭제 예정. MCP 연결이 불가한 경우에만 임시 저장 후 MCP 생성 즉시 삭제.
+1. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
+2. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
+3. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
+4. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 `.status/{파트}/{프로젝트명}/.status` 파일의 `outputs:` 섹션에 Drive/Figma URL을 기록한다. 하위 에이전트는 이 URL을 입력으로 사용한다.
+5. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
 
 ---
 
@@ -234,11 +229,36 @@ headerRange.setHorizontalAlignment('center');
 
 ---
 
-## KPI 모니터링
+## 보고서 관리 (업무이력DB 기반)
 
-- **주간 KPI**: 매주 월요일 자동 실행 → `/output/비서실/weekly-{YYYYMMDD}.md`
-- **월간 KPI**: 매월 1일 자동 실행 → `/output/비서실/monthly-{YYYYMM}.md`
-- **집계 방식**: `scripts/collect-kpi.py`로 `/output/` 스캔 → LLM이 해석 및 서술
+### 업무이력DB Google Sheet
+
+파트별 진행업무 및 커뮤니케이션 이력을 단일 Google Sheet로 관리한다.
+
+| 탭명 | 대상 |
+|------|------|
+| 비서실 | 비서실 직접 업무 |
+| 제안파트 | 영업팀·전략팀·정책자금팀 업무 |
+| 구축파트 | PM·웹기획팀·디자인팀·개발팀 업무 |
+| 운영파트 | 운영 업무 |
+| 연구소 | R&D·기술 리서치 업무 |
+
+각 탭 컬럼: 번호 | 파트 | 업무명 | 담당자 | 시작일 | 완료예정일 | 진행률 | 상태 | 주요내용 | 커뮤니케이션이력 | 비고
+
+Sheet ID는 `.status/report-config.yaml`에 저장.
+
+### 주간/월간 보고 자동화
+
+| 보고 유형 | 생성 시점 | 출력 방식 | 스킬 |
+|---------|---------|---------|------|
+| 주간보고 (PM-WR) | 매주 월요일 | 주간보고 Google Sheet에 `YYYY-MM-DD 주간` 탭 추가 | `weekly-report` |
+| 월간보고 (PM-MR) | 매월 1일 | 월간보고 Google Sheet에 `YYYY-MM 월간` 탭 추가 | `monthly-report` |
+
+**집계 방식**: 업무이력DB → `gen_weekly_report.py` / `gen_monthly_report.py` (gspread) → 기존 Sheet에 탭 추가
+
+### KPI 모니터링
+
+- **집계 방식**: `scripts/collect-kpi.py`로 `.status/` 스캔 → LLM 해석 → `kpi-reporter` 스킬로 보고서 생성
 
 ---
 
@@ -255,5 +275,7 @@ headerRange.setHorizontalAlignment('center');
 | `project-kickoff` | 킥오프/WBS 작성 | WBS + 사업수행계획서 생성 |
 | `ia-generator` | IA 설계 요청 | FO/BO IA 설계서 작성 |
 | `wireframe-spec` | 화면설계서 요청 | 화면설계서 작성 |
-| `kpi-reporter` | KPI 보고 트리거 | 주간/월간 보고서 생성 |
+| `weekly-report` | "주간보고", "weekly-report", 매주 월요일 | 업무이력DB → 주간보고 Sheet 탭 추가 |
+| `monthly-report` | "월간보고", "monthly-report", 매월 1일 | 업무이력DB → 월간보고 Sheet 탭 추가 |
+| `kpi-reporter` | KPI 보고 트리거 | 주간/월간 KPI 집계 보고서 생성 |
 | `doc-formatter` | 문서 포맷 교정 | 표준 양식 적용 |

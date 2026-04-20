@@ -1,7 +1,8 @@
 # 주간 보고서 표준 양식
 
 > 문서코드: PM-WR  
-> 버전: v1.0
+> 버전: v1.0  
+> 디자인 시스템: `/templates/krds-design-system.md`
 
 ---
 
