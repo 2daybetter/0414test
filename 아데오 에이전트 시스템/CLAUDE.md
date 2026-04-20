@@ -187,8 +187,39 @@
 | 출력 도구 | 해당 산출물 코드 |
 |-----------|----------------|
 | **Figma** (Figma MCP 사용) | PM-01, PM-02, DE-01, DE-02, DE-08, IM-01, IM-02, OP-04, **PR-01, PR-02** |
-| **Google Sheet** (Google Apps Script 생성) | PM-03, AY-01, DE-03, DE-04, DE-05, DE-06, DE-07, IM-03, TE-01~08, OP-01~03, OP-05 |
+| **Google Sheet** (Google Drive MCP 사용) | PM-03, AY-01, DE-03, DE-04, DE-05, DE-06, DE-07, IM-03, TE-01~08, OP-01~03, OP-05 |
 | **GitHub** (저장소 링크 제공) | IM-04 |
+
+### Google Sheet 스타일 규칙
+
+Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행)**에 아래 스타일을 적용한다:
+
+| 항목 | 값 |
+|------|---|
+| 배경 컬러 | `#29292A` |
+| 폰트 컬러 | `#FFFFFF` (white) |
+| 폰트 굵기 | Bold |
+| 텍스트 정렬 | Center (수평) |
+
+Google Apps Script로 생성하는 경우 시트 생성 직후 아래 코드를 반드시 포함한다:
+
+```javascript
+// 헤더 행 스타일 적용
+var headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
+headerRange.setBackground('#29292A');
+headerRange.setFontColor('#FFFFFF');
+headerRange.setFontWeight('bold');
+headerRange.setHorizontalAlignment('center');
+```
+
+---
+
+### 파일 생성 원칙
+
+1. **MCP 직접 생성**: 산출물은 텍스트 내용 확인 없이 Figma MCP 또는 Google Drive MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
+2. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
+3. **output 폴더 격리**: 프로젝트별 산출물은 `/output/{파트}/{프로젝트명}/` 하위에만 저장. 이 경계를 벗어난 경로에 파일을 생성하지 않는다.
+4. **output 폴더는 임시**: `/output/` 폴더는 향후 삭제 예정. MCP 연결이 불가한 경우에만 임시 저장 후 MCP 생성 즉시 삭제.
 
 ---
 
