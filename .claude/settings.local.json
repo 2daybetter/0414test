@@ -2,7 +2,6 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:www.yedaham.co.kr)",
-      "WebFetch(domain:bworld.co.kr)",
       "WebFetch(domain:www.bworld.co.kr)",
       "mcp__claude_ai_Figma__create_new_file",
       "mcp__claude_ai_Figma__use_figma",
