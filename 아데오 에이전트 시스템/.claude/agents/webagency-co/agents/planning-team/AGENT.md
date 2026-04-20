@@ -49,16 +49,15 @@
 
 ### Step 9 — DE 단계-1: IA 설계서 작성
 
-> ⚠️ **핵심 분기 확인 필요**: FO/BO 1depth 메뉴 도출 직후 사람 확인 요청 후 진행
-
-- **입력**: 요구사항정의서(Step 8 출력) + `/templates/ia-template.md`
+- **입력**: 요구사항정의서(Step 8 출력) + `/templates/ia-template.md` + rfp-context.md (현재 사이트 구조 섹션)
 - **처리 내용**:
   1. `ia-generator` 스킬 즉시 참조
-  2. 요구사항 기반 FO(Front Office) IA 초안 작성
-     - 1depth 메뉴 최소 4개 도출
-     - **[확인 요청]** 1depth 메뉴 목록을 사용자에게 제시하고 승인 대기
-     - 승인 후 2depth ~ 3depth 세부 구조 작성
-  3. BO(Back Office) IA 작성 (FO와 분리)
+  2. rfp-context.md의 "현재 사이트 구조" 섹션 참조하여 기존 메뉴 구조 파악
+  3. 요구사항 기반 FO(Front Office) IA 초안 작성
+     - 1depth 메뉴 최소 4개 도출 (rfp-context.md 현황 + 요구사항 기반)
+     - **자동 실행 모드**: 승인 없이 1depth → 2depth → 3depth 전체 연속 작성
+     - rfp-context.md 미존재 시: 1depth 도출 후 [확인 요청] 출력 후 승인 대기
+  4. BO(Back Office) IA 작성 (FO와 분리)
   4. IA_ID 부여: FO → `FO-N-NN`, BO → `BO-N-NN`
   5. 각 화면에 Type(Page / Layer Popup / Popup) 분류
   6. Page 타입 화면 전체에 URL 설계 및 SEO 메타 정의
@@ -125,13 +124,12 @@
 
 ## 핵심 분기 확인 기준
 
-이 에이전트에서 사람 확인이 필요한 시점은 **1곳** 이다:
-
 | 시점 | 확인 내용 | 처리 방법 |
 |------|---------|---------|
-| **Step 9 — IA 1depth 메뉴 도출 직후** | FO/BO 최상위 메뉴 구조 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 입력 후 2depth 작성 재개 |
+| **Step 9 — 자동 실행 모드** (rfp-context.md 존재) | FO/BO 최상위 메뉴 구조 | 확인 없이 1depth → 2depth → 3depth 연속 작성 |
+| **Step 9 — 수동 모드** (rfp-context.md 미존재) | FO/BO 최상위 메뉴 구조 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 후 2depth 재개 |
 
-**[확인 요청] 출력 형식**:
+수동 모드 **[확인 요청] 출력 형식**:
 ```
 [확인 요청] IA 1depth 메뉴 확인
 ─────────────────────────────

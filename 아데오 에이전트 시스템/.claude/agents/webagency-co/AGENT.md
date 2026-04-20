@@ -55,8 +55,9 @@ last_output: (없음)
 
 - **위임 대상**: PM L3 에이전트 (`.claude/agents/webagency-co/agents/pm/AGENT.md`)
 - **입력 전달**: 인계 문서 (제안서 + 계약 개요 + 요구사항 + 납기일)
+- **납기일 처리**: rfp-context.md의 납기일 자동 사용. 미기재 시 "미정 — 착수 후 합의"로 처리 후 계속 진행
 - **완료 확인**: `/output/구축 파트/{프로젝트명}/PM/kickoff-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: WBS 납기일 사람 확인 완료 + kickoff 파일 존재
+- **다음 단계 조건**: kickoff 파일 존재 (납기일 확인을 위한 대기 없음)
 
 ---
 
@@ -74,7 +75,7 @@ last_output: (없음)
 - **위임 대상**: 웹기획팀 L3 에이전트
 - **입력 전달**: 요구사항정의서
 - **완료 확인**: `/output/구축 파트/{프로젝트명}/웹기획팀/ia-{프로젝트명}.md` 존재 확인
-- **다음 단계 조건**: IA 1depth 사람 확인 완료 + IA 파일 존재 + validate-doc.py 통과
+- **다음 단계 조건**: IA 파일 존재 + validate-doc.py 통과 (1depth 확인을 위한 대기 없음)
 
 ---
 
@@ -157,8 +158,8 @@ last_output: (없음)
 
 | 시점 | 대기 조건 |
 |------|---------|
-| Step 7 → Step 8 전환 | PM 에이전트의 WBS 납기일 확인 완료 신호 수신 |
-| Step 9 → Step 10 전환 | 웹기획팀 에이전트의 IA 1depth 확인 완료 신호 수신 |
+| Step 7 → Step 8 전환 | kickoff 파일 존재 확인 (납기일 자동 사용, 대기 없음) |
+| Step 9 → Step 10 전환 | IA 파일 존재 + validate-doc.py 통과 확인 (1depth 승인 대기 없음) |
 
 ---
 
