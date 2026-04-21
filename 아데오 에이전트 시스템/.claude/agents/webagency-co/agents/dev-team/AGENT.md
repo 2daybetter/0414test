@@ -2,10 +2,8 @@
 
 > 소속: 구축 파트 (webagency-co) L2  
 > 문서코드: AGENT-DEV  
-> 버전: v1.0  
-> 작성일: 2026-04-16
-
----
+> 버전: v1.1  
+> 작성일: 2026-04-21
 
 ## 역할 및 책임
 
@@ -13,53 +11,51 @@
 - **관할 산출물**: DE-05 테이블정의서·ERD (Google Sheet), DE-06 프로그램 목록 (Google Sheet), DE-07 API 정의서 (Google Sheet), IM-03 개발가이드 (Google Sheet), IM-04 Github 운영 소스, TE-01 단위 테스트 시나리오 (GS), TE-02 단위 테스트 결과서 (GS), TE-05 스트레스 테스트 계획서 (GS), TE-06 스트레스 테스트 결과서 (GS), TE-07 모의해킹 테스트 계획서 (GS), TE-08 모의해킹 테스트 결과서 (GS)
 - **권한 한계**: 상위 에이전트(구축 파트 L2) 지시 없이 독립 실행 불가. 웹기획팀·디자인팀 직접 호출 불가.
 
----
-
 ## 트리거 조건
 
 이 에이전트는 다음 조건에서 구축 파트 L2 에이전트에 의해 호출된다:
 
 | 트리거 | 호출 단계 |
 |--------|---------|
-| 구축 파트 L2가 Step 11 (DE-3) 위임 | 화면설계서 + 디자인 시스템 완료 후 기술 설계 시작 |
+| 구축 파트 L2가 Step 6 (DE-3) 위임 | 화면설계서 + 디자인 시스템 완료 후 기술 설계 시작 |
 
 **사전 조건**: Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wireframe` Figma URL + `outputs.design-system` Drive URL 이 모두 존재해야 활성화된다.
 
----
-
 ## 워크플로우 단계별 수행 지침
 
-### Step 11 — DE 단계-3: 기술 설계 문서 작성
+### Step 6 — DE 단계-3: 기술 설계 문서 작성
 
-- **입력**: 화면설계서 Figma URL (Google Drive `.status` 파일의 `outputs.wireframe`) + 디자인 시스템 Drive URL (Google Drive `.status` 파일의 `outputs.design-system`) + 요구사항정의서 Drive URL (Google Drive `.status` 파일의 `outputs.requirements`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
+- **입력**: 화면설계서 Figma URL (Google Drive `.status` 파일의 `outputs.wireframe`) + 디자인 시스템 Drive URL (Google Drive `.status` 파일의 `outputs.design-system`) + 요구사항정의서 Drive URL (Google Drive `.status` 파일의 `outputs.requirements`) + IA 설계서 Drive URL (Google Drive `.status` 파일의 `outputs.ia`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
   1. 화면설계서에서 필요 데이터 항목 추출
-  2. **기술 스택 결정 (분기)**:
+  2. IA 설계서에서 FO/BO 전체 화면 목록 추출 (IA_ID 기준)
+  3. **기술 스택 결정 (분기)**:
      - **`outputs.rfp-context` URL 존재 시 (자동 실행 모드)**: `mcp__claude_ai_Google_Drive__read_file_content`로 rfp-context 읽어 "기술 스택 요구사항" 섹션 기반으로 확인 없이 자동 결정. 미기재 항목은 요구사항정의서 제약사항 기반으로 합리적 선택
      - **`outputs.rfp-context` URL 미존재 시 (수동 모드)**: `[확인 요청]` 블록 출력 후 승인 대기
-  3. 다음 4개 문서를 통합 tech-spec으로 작성:
+  4. 다음 3개 문서를 통합 tech-spec으로 작성:
 
-  **DE-05 DB 설계서**:
-  - 주요 엔티티(테이블) 목록 + 핵심 컬럼 정의
+  **DE-05 테이블정의서·ERD**:
+  - 주요 엔티티(테이블) 목록: 테이블명 / 한글명 / 설명
+  - 각 테이블 컬럼 정의: 컬럼명 / 데이터 타입 / NULL 여부 / PK/FK / 설명
   - PK/FK 관계 명시
   - 인덱스 전략 (자주 조회되는 컬럼 기준)
+  - 테이블 최소 5개 이상 정의
 
-  **DE-06 시스템 아키텍처**:
-  - 전체 시스템 구성도 (텍스트 다이어그램)
-  - 프론트엔드 / 백엔드 / DB / 인프라 계층 분리
-  - 배포 환경 (DEV / STG / PROD) 정의
+  **DE-06 프로그램 목록**:
+  - IA_ID와 연계된 전체 화면/기능 단위 목록
+  - 컬럼 구성: 프로그램ID / 프로그램명 / 구분(FO/BO) / 화면구분(Page/API/Batch) / 연관 IA_ID / 기술 스택 / 구현 방식(신규/수정/재사용) / 개발 우선순위
+  - FO 화면 수 + BO 화면 수 + API 수 집계표 포함
 
   **DE-07 API 명세서**:
-  - RESTful 엔드포인트 목록 (Method / Path / 설명 / 인증 여부)
+  - RESTful 엔드포인트 목록: Method / Path / 설명 / 인증 여부 / 연관 화면(IA_ID)
   - 주요 요청/응답 파라미터 명세 (JSON 구조)
   - 에러 코드 정의 (400 / 401 / 403 / 404 / 500)
+  - 엔드포인트 최소 10개 이상 정의
 
 - **출력 방법**: `mcp__claude_ai_Google_Drive__create_file`로 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.tech-spec`에 기록
-- **성공 기준**: 테이블정의서(테이블 5개 이상) + 프로그램 목록 + API 정의서(엔드포인트 10개 이상) 3개 항목 모두 존재
-- **검증 방법**: `scripts/validate-doc.py` 실행 + LLM 자기 검증 (4개 섹션 + API 엔드포인트 수 확인)
+- **성공 기준**: 테이블정의서(테이블 5개 이상) + 프로그램 목록(FO/BO/API 집계표 포함) + API 정의서(엔드포인트 10개 이상) 3개 항목 모두 존재
+- **검증 방법**: `scripts/validate-doc.py` 실행 + LLM 자기 검증 (3개 문서 섹션 + 항목 수 확인)
 - **실패 시 처리**: 자동 재시도 1회 → 초과 시 누락 항목 명시 후 구축 파트 L2 에스컬레이션
-
----
 
 ## 사용 스킬 목록
 
@@ -69,14 +65,12 @@
 |--------|---------|------|
 | — | — | 향후 `api-spec-generator`, `db-schema-generator` 스킬 추가 예정 |
 
----
-
 ## 핵심 분기 확인 기준
 
 | 시점 | 확인 내용 | 처리 방법 |
 |------|---------|---------|
-| **Step 11 — 자동 실행 모드** (`outputs.rfp-context` URL 존재) | 기술 스택 방향 | rfp-context Drive 파일 읽어 "기술 스택 요구사항" 기반 자동 결정. 확인 없이 진행 |
-| **Step 11 — 수동 모드** (`outputs.rfp-context` URL 미존재) | 프론트엔드/백엔드/DB/인프라 스택 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 후 tech-spec 전체 작성 재개 |
+| **Step 6 — 자동 실행 모드** (`outputs.rfp-context` URL 존재) | 기술 스택 방향 | rfp-context Drive 파일 읽어 "기술 스택 요구사항" 기반 자동 결정. 확인 없이 진행 |
+| **Step 6 — 수동 모드** (`outputs.rfp-context` URL 미존재) | 프론트엔드/백엔드/DB/인프라 스택 | `[확인 요청]` 블록 출력 후 진행 중단. 사용자 승인 후 tech-spec 전체 작성 재개 |
 
 **[확인 요청] 출력 형식**:
 ```
@@ -98,21 +92,19 @@
 ─────────────────────────────────────
 ```
 
----
-
 ## 에스컬레이션 규칙
 
 | 조건 | 보고 대상 | 에스컬레이션 내용 |
 |------|---------|----------------|
 | 자동 재시도 초과 | 구축 파트 L2 에이전트 | 실패 섹션 + 실패 원인 + 필요 추가 정보 |
-| 화면설계서 미존재로 처리 불가 | 구축 파트 L2 에이전트 | Step 10 완료 여부 재확인 요청 |
-| 기술 스택 정보 없어 아키텍처 작성 불가 | 구축 파트 L2 에이전트 | 스택 정보 항목 목록 |
+| 화면설계서 미존재로 처리 불가 | 구축 파트 L2 에이전트 | Step 5 완료 여부 재확인 요청 |
+| 기술 스택 정보 없어 설계 작성 불가 | 구축 파트 L2 에이전트 | 스택 정보 항목 목록 |
 
 **실패 리포트 형식**:
 ```
 [실패 리포트]
 ─────────────────────────────
-실패 단계: Step 11 / DE-05~08
+실패 단계: {단계 코드} (예: Step 6 / DE-05~07)
 실패 원인: {원인 1~2문장}
 누락 항목: {목록}
 재실행에 필요한 추가 정보: {목록}
