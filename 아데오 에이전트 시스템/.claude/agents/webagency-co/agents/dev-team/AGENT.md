@@ -27,12 +27,13 @@
 
 - **입력**: 화면설계서 Figma URL (Google Drive `.status` 파일의 `outputs.wireframe`) + 디자인 시스템 Drive URL (Google Drive `.status` 파일의 `outputs.design-system`) + 요구사항정의서 Drive URL (Google Drive `.status` 파일의 `outputs.requirements`) + IA 설계서 Drive URL (Google Drive `.status` 파일의 `outputs.ia`) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시)
 - **처리 내용**:
-  1. 화면설계서에서 필요 데이터 항목 추출
-  2. IA 설계서에서 FO/BO 전체 화면 목록 추출 (IA_ID 기준)
-  3. **기술 스택 결정 (분기)**:
+  1. `tech-spec-writer` 스킬 즉시 참조 (`.claude/skills/tech-spec-writer/`)
+  2. 화면설계서에서 필요 데이터 항목 추출
+  3. IA 설계서에서 FO/BO 전체 화면 목록 추출 (IA_ID 기준)
+  4. **기술 스택 결정 (분기)**:
      - **`outputs.rfp-context` URL 존재 시 (자동 실행 모드)**: `mcp__claude_ai_Google_Drive__read_file_content`로 rfp-context 읽어 "기술 스택 요구사항" 섹션 기반으로 확인 없이 자동 결정. 미기재 항목은 요구사항정의서 제약사항 기반으로 합리적 선택
      - **`outputs.rfp-context` URL 미존재 시 (수동 모드)**: `[확인 요청]` 블록 출력 후 승인 대기
-  4. 다음 3개 문서를 통합 tech-spec으로 작성:
+  5. 다음 3개 문서를 통합 tech-spec으로 작성:
 
   **DE-05 테이블정의서·ERD**:
   - 주요 엔티티(테이블) 목록: 테이블명 / 한글명 / 설명
@@ -59,11 +60,9 @@
 
 ## 사용 스킬 목록
 
-현재 개발팀 전용 스킬 없음. 필요 시 비서실 L1을 통해 `skill-creator`로 신규 스킬 생성 요청.
-
-| 스킬명 | 호출 시점 | 비고 |
-|--------|---------|------|
-| — | — | 향후 `api-spec-generator`, `db-schema-generator` 스킬 추가 예정 |
+| 스킬명 | 호출 시점 | 스킬 경로 |
+|--------|---------|---------|
+| `tech-spec-writer` | Step 6 진입 즉시 | `.claude/skills/tech-spec-writer/` |
 
 ## 핵심 분기 확인 기준
 

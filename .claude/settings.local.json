@@ -9,7 +9,8 @@
       "WebSearch",
       "WebFetch(domain:www.krds.go.kr)",
       "WebFetch(domain:github.com)",
-      "Read(//c/Users/LG/.claude/skills/blueprint/references/**)"
+      "Read(//c/Users/LG/.claude/skills/blueprint/references/**)",
+      "mcp__claude_ai_Google_Drive__read_file_content"
     ],
     "additionalDirectories": [
       "c:\\Users\\LG\\Documents\\Claude\\Projects\\아데오 에이전트 시스템\\output\\제안 파트\\bworld리뉴얼"

@@ -42,8 +42,13 @@
   → Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status의 outputs.rfp-context에 기록
   (mcp__claude_ai_Google_Drive__create_file, 루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM)
         ↓
+[score-optimizer 스킬 실행 — 영업팀 L3 담당]
+  → rfp-context의 평가항목 배점(기술능력 80점 전체 항목) 분석
+  → 섹션별 강조도(상/중/하) + 차별화 포인트 매핑 → evaluation-strategy 생성 후 Drive 업로드
+  → .status의 outputs.evaluation-strategy에 URL 기록
+        ↓
 [제안 파트 자동 실행 — proposal-co L2 → 영업팀 L3]
-  Step 1: rfp-analyzer → proposal-writer 순서로 제안서 초안 자동 작성 (확인 요청 없이 진행)
+  Step 1: score-optimizer 결과 주입 → proposal-writer 순서로 제안서 초안 자동 작성 (확인 요청 없이 진행)
         ↓
 [구축 파트 자동 실행 — webagency-co L2]
   Step 2 (PM):  WBS + 사업수행계획서 (rfp-context.md의 납기일 자동 사용)
@@ -61,7 +66,8 @@
 | 항목 | 처리 방식 |
 |------|---------|
 | 입찰 기한 | rfp-context.md에서 자동 추출, 미기재 시 "미정" 처리 |
-| 핵심 메시지·제안 전략 | rfp-context.md 기반 자동 생성 후 바로 제안서 작성 |
+| 평가항목 배점 전략 | rfp-context 평가 기준 기반 score-optimizer 자동 실행 → evaluation-strategy 생성 후 proposal-writer에 주입 |
+| 핵심 메시지·제안 전략 | evaluation-strategy 기반 섹션 순서·분량 자동 결정 후 제안서 작성 |
 | WBS 납기일 | rfp-context.md의 납기일 자동 사용 |
 | IA 1depth 확인 | URL 분석 + RFP 기반 자동 생성 후 바로 2depth 진행 |
 
@@ -78,7 +84,7 @@
 
 | 지시 유형 | 라우팅 대상 | 주요 스킬 |
 |-----------|------------|----------|
-| URL + RFP → 제안서·구축 전체 | 제안 파트 L2 → 영업팀 L3 → 구축 파트 L2 순차 자동 실행 | `rfp-analyzer`, `proposal-writer` |
+| URL + RFP → 제안서·구축 전체 | 제안 파트 L2 → 영업팀 L3 → 구축 파트 L2 순차 자동 실행 | `rfp-analyzer`, `score-optimizer`, `proposal-writer` |
 | 정책자금 조회 / 매칭 | 제안 파트 → 정책자금팀 L3 | `policy-fund-finder` |
 | 프로젝트 킥오프 / WBS | 구축 파트 → PM L3 | `project-kickoff` |
 | IA 설계서 작성 | 구축 파트 → 웹기획팀 L3 | `ia-generator` |
@@ -191,15 +197,30 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 헤더 행 외 **모든 데이터(내용) 셀은 배경색을 지정하지 않는다.**  
 단계 구분 행(WBS 등에서 PM/AY/DE/IM/TE/OP 섹션 구분용)에만 단계별 색상을 적용하고, 개별 데이터 행은 배경 없음.
 
+### 시스템 경계 규칙
+
+이 에이전트 시스템은 **`아데오 에이전트 시스템/` 폴더 내부에서만 동작**한다.
+
+- 상위 워크스페이스(부모 디렉터리)에 어떠한 파일도 생성·수정·삭제하지 않는다.
+- 설계서·계획서·blueprint 등 모든 기획 산출물은 이 시스템 외부(로컬 파일시스템)가 아닌 **Google Drive에만 생성**한다.
+- `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 파일은 이 시스템의 규칙 파일이므로 에이전트가 수정·삭제하지 않는다.
+
 ### 파일 생성 원칙
 
-1. **프로젝트 파일은 Google Drive 전용**: `spec-*.md`, `blueprint-*.md` 등 모든 프로젝트 파일은 Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로만 생성한다. 로컬 파일시스템(시스템 루트 포함 어느 경로도)에 생성 금지.
+1. **Blueprint → Google Drive 전용**:
+   - 프로젝트 설계서(`blueprint-*.md`), 분석서(`spec-*.md`) 등 기획 산출물은 반드시 Google Drive MCP로 생성한다.
+   - 저장 경로: `아데오 프로젝트/{프로젝트명}/blueprint-{프로젝트명}.md` (루트 폴더 ID: `1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM`)
+   - 로컬 파일시스템 어느 경로에도 생성 금지 — 워크스페이스 루트 포함.
+
+2. **MCP 도구 권한**: Google Drive·Figma MCP 도구는 `.claude/settings.json`의 `allowedTools`에 사전 등록되어 있어 매번 권한을 묻지 않는다. 추가 확인 없이 바로 실행한다.
 
 3. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
+
 4. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
-5. **프로젝트 가이드 파일 보호**: `CLAUDE.md`, `AGENT.md`, `SKILL.md`, `/templates/` 내 파일은 절대 수정·삭제하지 않는다.
-6. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 Google Drive 아데오 프로젝트/{프로젝트명}/.status 폴더의 `.status` 파일 (루트 폴더 ID: 1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM) `outputs:` 섹션에 Drive/Figma URL을 기록한다 (쓰기: mcp__claude_ai_Google_Drive__create_file, 읽기: mcp__claude_ai_Google_Drive__read_file_content). 하위 에이전트는 이 URL을 입력으로 사용한다.
-7. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
+
+5. **`.status` 파일 규칙**: 모든 에이전트는 산출물 생성 후 반드시 Google Drive 아데오 프로젝트/{프로젝트명}/.status 폴더의 `.status` 파일 (루트 폴더 ID: `1XHWdKpQmsoyiScj-NicRrHuYzDZsyBDM`) `outputs:` 섹션에 Drive/Figma URL을 기록한다 (쓰기: `mcp__claude_ai_Google_Drive__create_file`, 읽기: `mcp__claude_ai_Google_Drive__read_file_content`). 하위 에이전트는 이 URL을 입력으로 사용한다.
+
+6. **로컬 파일 생성 금지**: 산출물을 로컬 `.md`/`.xlsx` 파일로 저장하지 않는다. Python 생성기로 `.xlsx`를 생성한 경우 Drive MCP 업로드 즉시 로컬 파일 삭제.
 
 ## 산출물 검증 기준
 
@@ -248,7 +269,10 @@ Sheet ID는 Google Drive 아데오 프로젝트 루트 폴더 (ID: 1XHWdKpQmsoyi
 | 스킬명 | 트리거 | 역할 | 담당 |
 |--------|--------|------|------|
 | `rfp-analyzer` | URL + RFP 제공 시 영업팀 L3 Step 0에서 항상 실행 | URL 분석 + RFP 파싱 → rfp-context.md 생성 | 영업팀 L3 |
-| `proposal-writer` | 영업팀 Step 1에서 rfp-analyzer 완료 후 자동 실행 | 제안 전략 수립 + 제안서 초안 생성 | 영업팀 L3 |
+| `score-optimizer` | rfp-analyzer 완료 후 영업팀 L3 Step 1에서 자동 실행 | 평가항목 배점 분석 → evaluation-strategy 생성 | 영업팀 L3 |
+| `proposal-writer` | 영업팀 Step 2에서 score-optimizer 완료 후 자동 실행 | evaluation-strategy 반영 제안서 초안 생성 | 영업팀 L3 |
+| `requirements-writer` | 구축 파트 Step 4에서 웹기획팀 L3 자동 실행 | RFP 요구사항 전 카테고리 → AY-01 요구사항정의서 생성 | 웹기획팀 L3 |
+| `tech-spec-writer` | 구축 파트 Step 7에서 개발팀 L3 자동 실행 | 기술 스택 기반 기술 스펙 7종 자동 생성 (DE-01~07) | 개발팀 L3 |
 | `policy-fund-finder` | 정책자금 조회 | 매칭 자금 목록 생성 | 정책자금팀 L3 |
 | `project-kickoff` | 킥오프/WBS 작성 | WBS + 사업수행계획서 생성 |
 | `ia-generator` | IA 설계 요청 | FO/BO IA 설계서 작성 |

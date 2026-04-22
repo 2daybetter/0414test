@@ -145,9 +145,9 @@ outputs:
 | L3 에이전트 | 사용 스킬 |
 |-----------|---------|
 | PM | project-kickoff |
-| 웹기획팀 | ia-generator, wireframe-spec |
+| 웹기획팀 | requirements-writer, ia-generator, wireframe-spec |
 | 디자인팀 | — |
-| 개발팀 | — |
+| 개발팀 | tech-spec-writer |
 
 ## 핵심 분기 확인 기준
 

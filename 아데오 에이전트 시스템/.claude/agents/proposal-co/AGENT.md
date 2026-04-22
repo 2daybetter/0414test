@@ -29,6 +29,7 @@ locked_at: YYYY-MM-DDTHH:MM:SS
 last_output: (없음)
 outputs:
   rfp-context: {Google Drive URL 또는 (없음)}
+  evaluation-strategy: {Google Drive URL 또는 (없음)}
   proposal: {Figma URL 또는 (없음)}
   policy-fund: {Google Drive URL 또는 (없음)}
   policy-fund-proposal: {Figma URL 또는 (없음)}
@@ -46,13 +47,23 @@ outputs:
 ### Step 0: rfp-analyzer 실행
 
 영업팀 L3에 URL + RFP를 전달하여 `rfp-analyzer` 스킬을 실행한다.  
-완료 후 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status의 `outputs.rfp-context` URL이 생성된다.  
+완료 후 `.status`의 `outputs.rfp-context` URL이 생성된다.  
 이후 모든 단계는 이 URL을 기반으로 자동 진행한다.
 
-### Step 1: 제안서 초안 작성
+### Step 1: score-optimizer 실행
 
-- 입력: rfp-context Drive URL
-- 처리: 영업팀 L3에 위임 → rfp-analyzer → proposal-writer 순서로 자동 실행 (확인 요청 없이 진행)
+- 입력: `.status`의 `outputs.rfp-context` Drive URL
+- 처리: 영업팀 L3에 위임 → `score-optimizer` 스킬 실행
+  - rfp-context 평가항목 배점(기술능력 80점 전체) 파싱
+  - 섹션별 강조도(상/중/하) + 차별화 포인트 매핑 → evaluation-strategy 문서 생성
+  - Drive 업로드 → `.status`의 `outputs.evaluation-strategy`에 URL 기록
+- 완료 조건: `.status`의 `outputs.evaluation-strategy` Drive URL 존재
+- 실패 처리: 평가 배점 테이블 미추출 시 rfp-context 재파싱 1회 → 여전히 실패 시 이사님 에스컬레이션
+
+### Step 2: 제안서 초안 작성
+
+- 입력: rfp-context + evaluation-strategy Drive URL (두 항목 모두)
+- 처리: 영업팀 L3에 위임 → `proposal-writer` 스킬 실행 (evaluation-strategy 주입, 확인 요청 없이 진행)
 - 완료 조건: `.status`의 `outputs.proposal` Figma URL 존재
 
 ### Step D: 정책자금 매칭 (선택)
@@ -73,8 +84,10 @@ outputs:
 입찰/제출 기한: {날짜}
 
 완료된 산출물:
-  Step 1  제안서 (PR-01)    → Figma URL: {outputs.proposal}
-  Step D  정책자금 목록      → Drive URL: {outputs.policy-fund}
+  Step 0  rfp-context            → Drive URL: {outputs.rfp-context}
+  Step 1  evaluation-strategy    → Drive URL: {outputs.evaluation-strategy}
+  Step 2  제안서 (PR-01)         → Figma URL: {outputs.proposal}
+  Step D  정책자금 목록          → Drive URL: {outputs.policy-fund}
   Step D  정책자금 제안서 (PR-02) → Figma URL: {outputs.policy-fund-proposal}
 ────────────────────────────────────
 이사님 최종 검토 후 제출 요청드립니다.
@@ -86,8 +99,9 @@ outputs:
 
 | 스킬 | 담당 L3 | 트리거 단계 |
 |------|---------|-----------|
-| `rfp-analyzer` | 영업팀 L3 | Step 1 (선행) |
-| `proposal-writer` | 영업팀 L3 | Step 1 |
+| `rfp-analyzer` | 영업팀 L3 | Step 0 |
+| `score-optimizer` | 영업팀 L3 | Step 1 (rfp-analyzer 완료 후) |
+| `proposal-writer` | 영업팀 L3 | Step 2 (score-optimizer 완료 후) |
 | `policy-fund-finder` | 정책자금팀 L3 | Step D |
 
 ## 에스컬레이션 기준

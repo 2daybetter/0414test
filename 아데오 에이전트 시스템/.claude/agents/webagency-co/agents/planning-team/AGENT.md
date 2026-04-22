@@ -28,18 +28,19 @@
 
 - **입력**: WBS 문서(Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wbs` Drive URL) + rfp-context Drive URL (`outputs.rfp-context`, 존재 시) + 벤치마킹 대상 URL
 - **처리 내용**:
-  1. `outputs.rfp-context` URL 존재 시 `mcp__claude_ai_Google_Drive__read_file_content`로 내용 읽어 "고객사 현황" 및 "요구사항" 섹션을 분석 입력으로 사용
-  2. 고객사 현황 분석 및 경쟁사 벤치마킹 (최소 3곳):
+  1. `requirements-writer` 스킬 즉시 참조 (`.claude/skills/requirements-writer/`)
+  2. `outputs.rfp-context` URL 존재 시 `mcp__claude_ai_Google_Drive__read_file_content`로 내용 읽어 "고객사 현황" 및 "요구사항" 섹션을 분석 입력으로 사용
+  3. 고객사 현황 분석 및 경쟁사 벤치마킹 (최소 3곳):
      - **UX/UI 구조**: 정보 구조, 네비게이션, 핵심 페이지 레이아웃
      - **기능 목록**: FO 주요 기능 / BO 주요 기능
      - **기술 스택**: 공개된 정보 기준 (Wappalyzer 등)
      - **강점 / 약점**: 각 경쟁사별 요약
      - **비교표**: 벤치마킹 대상 3곳 × 분석 항목 매트릭스
      - **시사점 및 적용 권고**: 고객사 사이트에 반영 가능한 인사이트
-  3. 기능 요구사항 목록 작성 (최소 10개, 우선순위 포함)
-  4. 비기능 요구사항 정의 (성능 / 보안 / 반응형 3개 분류)
-  5. 서비스 범위 확정 (포함/제외 명시)
-  6. 서비스 컨셉 방향 정리
+  4. 기능 요구사항 목록 작성 (최소 10개, 우선순위 포함)
+  5. 비기능 요구사항 정의 (성능 / 보안 / 반응형 3개 분류)
+  6. 서비스 범위 확정 (포함/제외 명시)
+  7. 서비스 컨셉 방향 정리
 - **출력 방법**: `mcp__claude_ai_Google_Drive__create_file` 업로드 → URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.requirements`에 기록
 - **성공 기준**: 기능 요구사항 10개 이상 + 비기능 3개 분류 섹션 + 범위 확정 섹션 + 컨셉 방향 포함
 - **검증 방법**: `scripts/validate-doc.py` 실행 후 스키마 통과 확인
@@ -118,6 +119,7 @@
 
 | 스킬명 | 호출 시점 | 스킬 경로 |
 |--------|---------|---------|
+| `requirements-writer` | Step 3 진입 즉시 | `.claude/skills/requirements-writer/` |
 | `ia-generator` | Step 4 진입 즉시 | `.claude/skills/ia-generator/` |
 | `wireframe-spec` | Step 5 진입 즉시 | `.claude/skills/wireframe-spec/` |
 
