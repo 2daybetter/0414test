@@ -1,6 +1,6 @@
 ---
 name: project-kickoff
-description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 gen_wbs.py → Google Drive MCP로 생성하고, 사업수행계획서(PM-01)는 Figma MCP로 작성한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "사업수행계획서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
+description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스킬. 제안 파트 인계 문서를 입력받아 아데오 표준 WBS(PM-03)를 gen_wbs_gsheet.py(템플릿 복사 방식)로 Google Drive에 생성하고, 사업수행계획서(PM-01)는 Figma MCP로 작성한다. 트리거: "킥오프", "WBS 작성", "project-kickoff", "사업수행계획서", "프로젝트 시작", PM-03 산출물 요청, PM 에이전트의 Step 7 진입 시 자동 참조.
 ---
 
 # project-kickoff
@@ -10,7 +10,7 @@ description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스
 제안 파트 인계 문서 기반으로 아데오 표준 착수 문서 패키지(PM-01~03)를 생성한다.
 
 **출력 형식 원칙**:
-- **WBS (PM-03)**: Excel 금지 → **Google Sheets** (`scripts/generators/gen_wbs.py` 실행 → Google Drive MCP 업로드)
+- **WBS (PM-03)**: Excel 금지 → **Google Sheets** (`scripts/generators/gen_wbs_gsheet.py` 실행 — wbs_template 복사 후 설정 탭 자동 업데이트)
 - **사업수행계획서 (PM-01)**: Figma 파일 (Figma MCP 사용)
 
 반드시 `/templates/kickoff-template.md` 를 참조하여 내용을 구성한다.
@@ -65,15 +65,38 @@ description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스
 
 ### Step 3: WBS Google Sheets 생성 (PM-03)
 
-승인된 일정 기준으로 프로젝트 데이터를 JSON으로 구성하고 `scripts/generators/gen_wbs.py`로 `.xlsx`를 생성한 뒤 Google Drive MCP로 업로드한다.
+`scripts/generators/gen_wbs_gsheet.py`를 실행하여 표준 wbs_template을 복사하고 설정 탭을 업데이트한다.
+템플릿의 모든 수식·서식·간트차트·대시보드·주간보고 탭이 그대로 유지되며, 설정 값 변경만으로 전체 시트가 자동 반영된다.
 
-시트 구조 및 스타일 규칙: `templates/kickoff-template.md` **Google Sheets 구조 및 스타일** 섹션 참조.
+**wbs_template 구조**:
+- **설정 탭**: 프로젝트명·시작일·종료일·PM·타임라인 길이·단계별 가중치·공휴일 목록
+- **WBS 대시보드 탭**: 전체 진척률·단계별 진척·작업 카운트·주요 마일스톤 자동 계산
+- **WBS 일정 탭**: Gantt 차트 (6단계 × 세부 작업, 일별 타임라인 ~210일)
+- **주간보고_template 탭**: 프로젝트 주간보고 양식 (WBS 연동)
+
+**실행 명령**:
+```bash
+cd 아데오\ 에이전트\ 시스템
+python scripts/generators/gen_wbs_gsheet.py \
+  --project "{프로젝트명}" \
+  --start "{시작일 YYYY-MM-DD}" \
+  --end "{종료일 YYYY-MM-DD}" \
+  --pm "{PM 이름}" \
+  --folder-id "{Google Drive 프로젝트 폴더 ID}"
+```
+
+**업데이트 항목** (설정 탭 B열):
+- 프로젝트명, 프로젝트 시작일, 프로젝트 종료일, 프로젝트 PM, 타임라인 길이(일) 자동 계산
 
 **실행 순서**:
-1. 마일스톤·산출물·리스크 데이터를 JSON 스키마(`kickoff-template.md` 참조)에 맞게 구성
-2. `scripts/generators/gen_wbs.py` 실행 → `WBS_{프로젝트명}_{YYYYMMDD}.xlsx` 생성
-3. Google Drive MCP(`mcp__claude_ai_Google_Drive__create_file`)로 업로드
-4. 반환된 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wbs`에 기록 (mcp__claude_ai_Google_Drive__create_file)
+1. 위 명령 실행 → stdout에서 `SHEET_ID=` / `SHEET_URL=` 추출
+2. 반환된 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wbs`에 기록 (mcp__claude_ai_Google_Drive__create_file)
+3. `gen_weekly_report_wbs.py`로 주간보고_template 탭 초기화:
+   ```bash
+   python scripts/generators/gen_weekly_report_wbs.py --sheet-id "{SHEET_ID}"
+   ```
+   - WBS 일정 탭에서 금주/차주 작업을 추출해 주간보고_template 탭에 자동 채운다.
+   - Apps Script "📋 주간보고" 메뉴(wbs_weekly_report.js)가 자동 바인딩되어 있어 시트에서 직접 xlsx 저장 가능.
 
 ---
 

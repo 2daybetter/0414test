@@ -1,0 +1,353 @@
+{
+  "project_name": "더케이예다함 홈페이지 개편",
+  "version": "v1.0",
+  "doc_date": "2026-04-23",
+  "client_name": "더케이예다함",
+  "author": "아데오",
+  "reviewer": "PM",
+  "as_is": [
+    {
+      "category": "사이트구조",
+      "current": "단순 메뉴 구조, 정보 분류 불명확",
+      "issue": "예식/연회/패키지 정보 혼재로 탐색 어려움"
+    },
+    {
+      "category": "예약시스템",
+      "current": "전화 및 이메일 예약만 가능",
+      "issue": "온라인 예약 불가, 실시간 가용일 확인 불가"
+    },
+    {
+      "category": "모바일대응",
+      "current": "반응형 미적용, PC 전용 레이아웃",
+      "issue": "모바일 사용자 이탈률 높음 (70%↑)"
+    },
+    {
+      "category": "콘텐츠관리",
+      "current": "HTML 직접 편집 방식 CMS 없음",
+      "issue": "콘텐츠 업데이트 지연, 담당자 의존도 높음"
+    },
+    {
+      "category": "SEO",
+      "current": "메타태그 미설정, 구조화 데이터 없음",
+      "issue": "검색 노출 저조"
+    }
+  ],
+  "to_be": [
+    {
+      "goal": "직관적 IA 재설계",
+      "detail": "FO 3depth 기준 IA 재구조화, 예식/연회 분리",
+      "effect": "사용자 탐색 시간 50% 단축"
+    },
+    {
+      "goal": "온라인 상담예약 시스템",
+      "detail": "희망날짜/서비스유형 선택 → 상담신청 → 관리자 확인 플로우",
+      "effect": "예약 접수 24시간 가능"
+    },
+    {
+      "goal": "반응형 웹 구현",
+      "detail": "KRDS v1.0 기반 Mobile-first 반응형 개발",
+      "effect": "모바일 이탈률 30% 감소 목표"
+    },
+    {
+      "goal": "CMS 기반 콘텐츠 관리",
+      "detail": "BO에서 갤러리/공지/패키지 정보 직접 관리",
+      "effect": "업데이트 리드타임 1/5 단축"
+    },
+    {
+      "goal": "SEO 최적화",
+      "detail": "페이지별 메타태그/구조화데이터/sitemap 자동 생성",
+      "effect": "주요 키워드 검색 상위 노출"
+    }
+  ],
+  "benchmarks": [
+    {
+      "name": "더케이호텔서울",
+      "url": "https://www.the-k.co.kr/seoul",
+      "point": "패키지 상품 구성, 직관적 예약 플로우"
+    },
+    {
+      "name": "그랜드앰배서더서울",
+      "url": "https://www.ambassadorhotel.co.kr",
+      "point": "갤러리 레이아웃, 이미지 중심 UI"
+    },
+    {
+      "name": "롯데호텔웨딩",
+      "url": "https://www.lottehotel.com/wedding",
+      "point": "서비스별 상세 안내, FAQ 구성"
+    }
+  ],
+  "fo_requirements": [
+    {
+      "id": "SFR-01",
+      "category": "사이트구조",
+      "content": "3depth 기준 FO IA 구현",
+      "priority": "Must",
+      "screen": "전체",
+      "note": ""
+    },
+    {
+      "id": "SFR-02",
+      "category": "사이트구조",
+      "content": "공통 GNB/LNB/Footer 컴포넌트 구현",
+      "priority": "Must",
+      "screen": "전체",
+      "note": ""
+    },
+    {
+      "id": "SFR-03",
+      "category": "사이트구조",
+      "content": "브레드크럼(Breadcrumb) 네비게이션",
+      "priority": "Should",
+      "screen": "서브페이지",
+      "note": ""
+    },
+    {
+      "id": "SFR-04",
+      "category": "메인",
+      "content": "메인 비주얼 슬라이더 (자동/수동)",
+      "priority": "Must",
+      "screen": "메인",
+      "note": ""
+    },
+    {
+      "id": "SFR-05",
+      "category": "메인",
+      "content": "서비스 바로가기 퀵메뉴 (예식/연회/패키지/갤러리)",
+      "priority": "Must",
+      "screen": "메인",
+      "note": ""
+    },
+    {
+      "id": "SFR-06",
+      "category": "메인",
+      "content": "공지사항/이벤트 최신 3건 노출",
+      "priority": "Should",
+      "screen": "메인",
+      "note": ""
+    },
+    {
+      "id": "SFR-07",
+      "category": "소개",
+      "content": "더케이예다함 소개 (인사말/연혁/오시는길)",
+      "priority": "Must",
+      "screen": "소개",
+      "note": ""
+    },
+    {
+      "id": "SFR-08",
+      "category": "예식",
+      "content": "예식홀 리스트 및 상세 (수용인원/면적/사진)",
+      "priority": "Must",
+      "screen": "예식",
+      "note": ""
+    },
+    {
+      "id": "SFR-09",
+      "category": "연회",
+      "content": "연회장 리스트 및 상세",
+      "priority": "Must",
+      "screen": "연회",
+      "note": ""
+    },
+    {
+      "id": "SFR-10",
+      "category": "부대시설",
+      "content": "부대시설 소개 (드레스숍/미용실/스튜디오 등)",
+      "priority": "Should",
+      "screen": "부대시설",
+      "note": ""
+    },
+    {
+      "id": "SFR-11",
+      "category": "패키지",
+      "content": "패키지 리스트 및 상세 (가격/구성/특이사항)",
+      "priority": "Must",
+      "screen": "패키지",
+      "note": ""
+    },
+    {
+      "id": "ECR-01",
+      "category": "상담예약",
+      "content": "온라인 상담예약 신청 폼 (날짜/서비스/인원/연락처)",
+      "priority": "Must",
+      "screen": "상담예약",
+      "note": "필수항목 유효성 검증"
+    },
+    {
+      "id": "ECR-02",
+      "category": "상담예약",
+      "content": "예약 신청 완료 페이지 및 이메일 알림",
+      "priority": "Must",
+      "screen": "상담예약",
+      "note": ""
+    },
+    {
+      "id": "ECR-03",
+      "category": "상담예약",
+      "content": "캘린더 형태 예약 현황 표시 (관리자 설정 연동)",
+      "priority": "Should",
+      "screen": "상담예약",
+      "note": ""
+    },
+    {
+      "id": "PSR-01",
+      "category": "갤러리",
+      "content": "갤러리 리스트 (카테고리 필터: 예식/연회/기타)",
+      "priority": "Must",
+      "screen": "갤러리",
+      "note": ""
+    },
+    {
+      "id": "PSR-02",
+      "category": "갤러리",
+      "content": "갤러리 이미지 라이트박스 뷰어",
+      "priority": "Should",
+      "screen": "갤러리",
+      "note": ""
+    },
+    {
+      "id": "PSR-03",
+      "category": "게시판",
+      "content": "공지사항/이벤트 게시판 (목록/상세)",
+      "priority": "Must",
+      "screen": "공지이벤트",
+      "note": ""
+    },
+    {
+      "id": "PSR-04",
+      "category": "게시판",
+      "content": "FAQ 목록 (아코디언 UI)",
+      "priority": "Must",
+      "screen": "FAQ",
+      "note": ""
+    },
+    {
+      "id": "SOR-01",
+      "category": "공통",
+      "content": "반응형 웹 구현 (Mobile/Tablet/Desktop)",
+      "priority": "Must",
+      "screen": "전체",
+      "note": "KRDS v1.0 기준"
+    }
+  ],
+  "bo_requirements": [
+    {
+      "id": "DAR-01",
+      "category": "콘텐츠관리",
+      "content": "예식/연회/패키지 콘텐츠 CRUD",
+      "priority": "Must",
+      "screen": "콘텐츠관리",
+      "note": ""
+    },
+    {
+      "id": "DAR-02",
+      "category": "콘텐츠관리",
+      "content": "메인 슬라이더/퀵메뉴 관리",
+      "priority": "Must",
+      "screen": "콘텐츠관리",
+      "note": ""
+    },
+    {
+      "id": "DAR-03",
+      "category": "콘텐츠관리",
+      "content": "갤러리 이미지 등록/삭제/순서변경",
+      "priority": "Must",
+      "screen": "갤러리관리",
+      "note": ""
+    },
+    {
+      "id": "DAR-04",
+      "category": "콘텐츠관리",
+      "content": "공지사항/이벤트/FAQ 게시판 관리",
+      "priority": "Must",
+      "screen": "게시판관리",
+      "note": ""
+    },
+    {
+      "id": "COR-01",
+      "category": "상담관리",
+      "content": "상담예약 신청 목록 조회 및 상태 변경",
+      "priority": "Must",
+      "screen": "상담관리",
+      "note": ""
+    },
+    {
+      "id": "COR-02",
+      "category": "상담관리",
+      "content": "예약 가능일 캘린더 설정",
+      "priority": "Should",
+      "screen": "상담관리",
+      "note": ""
+    },
+    {
+      "id": "COR-03",
+      "category": "통계",
+      "content": "방문자/페이지뷰/상담신청 통계 대시보드",
+      "priority": "Nice",
+      "screen": "통계",
+      "note": "GA 연동"
+    }
+  ],
+  "non_func": [
+    {
+      "category": "성능",
+      "content": "페이지 로딩 3초 이내 (LCP 기준)",
+      "note": "이미지 최적화 필수"
+    },
+    {
+      "category": "성능",
+      "content": "PageSpeed Insights 모바일 70점 이상",
+      "note": ""
+    },
+    {
+      "category": "보안",
+      "content": "SSL 인증서 적용 (HTTPS)",
+      "note": ""
+    },
+    {
+      "category": "보안",
+      "content": "XSS/SQL Injection 방어",
+      "note": "입력값 필터링"
+    },
+    {
+      "category": "보안",
+      "content": "관리자 로그인 세션 관리 (30분 자동로그아웃)",
+      "note": ""
+    },
+    {
+      "category": "보안",
+      "content": "개인정보 수집 동의 처리 (예약폼)",
+      "note": "개인정보보호법 준수"
+    },
+    {
+      "category": "운영",
+      "content": "크로스브라우저 지원 (Chrome/Safari/Edge 최신 2버전)",
+      "note": ""
+    },
+    {
+      "category": "운영",
+      "content": "접근성 준수 (WCAG 2.1 AA 수준)",
+      "note": ""
+    },
+    {
+      "category": "운영",
+      "content": "소스코드 형상관리 (Git)",
+      "note": ""
+    },
+    {
+      "category": "운영",
+      "content": "유지보수 매뉴얼 제공",
+      "note": "관리자 가이드 포함"
+    },
+    {
+      "category": "운영",
+      "content": "오픈 후 3개월 무상 AS",
+      "note": ""
+    },
+    {
+      "category": "운영",
+      "content": "정기 백업 (일 1회 자동)",
+      "note": ""
+    }
+  ]
+}
