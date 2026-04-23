@@ -1,7 +1,7 @@
 """
 daily_policy_updater.py
 매일 09:00 실행 — 나라장터 입찰공고 + 정책자금 공고를 조회하여
-수주정보 스프레드시트 탭을 업데이트한다.
+수주정보 스프레드시트(입찰공고 목록 / 정책자금 목록 탭)를 업데이트한다.
 
 Usage:
   python scripts/daily_policy_updater.py
@@ -161,7 +161,7 @@ def ensure_header(ws: gspread.Worksheet, headers: list[str]):
 
 # ── 수정정보 목록 탭 업데이트 ─────────────────────────────────────────────────
 def update_g2b_sheet(sh: gspread.Spreadsheet, bids: list[dict]) -> int:
-    ws = get_or_create_ws(sh, "수정정보 목록", cols=len(G2B_HEADERS))
+    ws = get_or_create_ws(sh, "입찰공고 목록", cols=len(G2B_HEADERS))
     ensure_header(ws, G2B_HEADERS)
 
     existing_nos = {row[0] for row in ws.get_all_values()[1:] if row and row[0]}
@@ -209,11 +209,11 @@ def main():
     sh = gc.open_by_key(SHEET_ID)
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    # 수정정보 목록 (나라장터 "홈페이지" 키워드)
+    # 입찰공고 목록 (나라장터 "홈페이지" 키워드)
     print(f"[{now}] 나라장터 입찰공고 조회 중...")
     bids = fetch_g2b_bids(g2b_api_key, keyword="홈페이지")
     g2b_added = update_g2b_sheet(sh, bids)
-    print(f"  수정정보 목록: 조회 {len(bids)}건 / 신규 추가 {g2b_added}건")
+    print(f"  입찰공고 목록: 조회 {len(bids)}건 / 신규 추가 {g2b_added}건")
 
     # 정책자금 목록 (K-Startup)
     print(f"[{now}] 정책자금 공고 조회 중...")

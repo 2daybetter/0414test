@@ -178,9 +178,7 @@ def read_db(gc, db_sheet_id: str, month_str: str) -> dict:
                     })
 
     # KPI 산출
-    total = len(result["completed"]) + len(result["in_progress"]) + len([
-        r for r in result["in_progress"] if r.get("상태") == "보류"
-    ])
+    total = len(result["completed"]) + len(result["in_progress"])
     complete_rate = round(len(result["completed"]) / total * 100) if total else 0
     delay_rate = round(len(result["delayed"]) / total * 100) if total else 0
     result["kpi"] = {

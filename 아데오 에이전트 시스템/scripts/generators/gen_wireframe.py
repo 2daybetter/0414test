@@ -7,7 +7,6 @@ from pptx import Presentation
 from pptx.util import Inches, Pt, Emu, Cm
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
-from pptx.util import Inches, Pt
 
 def rgb(hex_str):
     h = hex_str.lstrip("#")
@@ -54,7 +53,6 @@ def add_textbox(slide, left, top, width, height, text,
 
 
 def add_rect(slide, left, top, width, height, bg=None, line=None, line_width=Pt(1)):
-    from pptx.util import Pt as PPt
     shape = slide.shapes.add_shape(
         1,  # MSO_SHAPE_TYPE.RECTANGLE
         left, top, width, height

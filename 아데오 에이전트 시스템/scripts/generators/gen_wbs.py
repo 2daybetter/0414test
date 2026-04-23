@@ -67,7 +67,6 @@ def build_wbs_sheet(wb, d):
     ws = wb.create_sheet("WBS")
     ws.sheet_view.showGridLines = False
 
-    COLS = ["코드", "산출물 코드", "산출물명", "담당팀", "시작일", "종료일", "진행률", "비고"]
     widths = [3, 10, 12, 22, 16, 12, 12, 10, 12, 3]
     for col, w in zip("ABCDEFGHIJ", widths):
         set_col_width(ws, col, w)

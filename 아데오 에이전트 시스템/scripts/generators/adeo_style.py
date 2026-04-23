@@ -1,7 +1,7 @@
 """
 아데오 공통 스타일 정의 — 모든 Generator가 import해서 사용
 """
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side, numbers
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
 # ─── 색상 ────────────────────────────────────────────────────────────────────

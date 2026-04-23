@@ -67,8 +67,8 @@ def get_gc(config: dict):
 
 
 # ── 날짜 계산 ─────────────────────────────────────────────────────────────────
-def get_week_range(base_date: date) -> tuple[date, date, date, date]:
-    """base_date(월요일) 기준 금주·전주 범위 반환."""
+def get_week_range(base_date: date) -> tuple[date, date, date]:
+    """base_date 기준 금주 월~금, 전주 월요일 반환."""
     this_mon = base_date - timedelta(days=base_date.weekday())
     this_fri = this_mon + timedelta(days=4)
     prev_mon = this_mon - timedelta(days=7)
@@ -165,7 +165,7 @@ def write_tab(gc, weekly_sheet_id: str, base_date: date, data: dict):
     rows_data = []
 
     # ── 헤더 정보 ──
-    this_mon, this_fri, _, _ = get_week_range(base_date)
+    this_mon, this_fri, _ = get_week_range(base_date)
     rows_data.append([f"아데오 그룹 비서실 주간업무 보고"])
     rows_data.append(["보고 기간", f"{this_mon} (월) ~ {this_fri} (금)"])
     rows_data.append(["작성일", str(base_date), "보고 주차", f"{base_date.isocalendar()[1]}주차"])

@@ -267,7 +267,6 @@ def collect(service, today: date) -> dict:
         step_dist[sc] = step_dist.get(sc, 0) + 1
 
     # 주간 산출물: locked_at이 오늘 기준 7일 이내인 프로젝트의 output_count 합
-    weekly_cutoff = today.toordinal() - 7
     weekly_outputs = sum(
         p["output_count"]
         for p in projects
