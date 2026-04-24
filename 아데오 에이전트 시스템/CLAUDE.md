@@ -226,6 +226,59 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 
 ---
 
+### 템플릿 복사 규칙
+
+신규 프로젝트 폴더 생성 시점(rfp-analyzer Phase 3)에 Google Drive 템플릿 폴더의 하위 폴더 3개 + 파일 4개를 프로젝트 폴더로 복사한다.  
+**처음부터 생성하지 않는다 — 반드시 복사 후 내용 수정 방식으로 진행한다.**
+
+#### 템플릿 폴더 위치
+
+| 항목 | ID |
+|------|-----|
+| 템플릿 폴더 (`아데오 프로젝트 > template`) | `11gcDMLFikxKOKT21AZd_ivBEf0tTlIIK` |
+
+#### 복사 대상 — 하위 폴더 (3개)
+
+| 폴더명 | ID |
+|--------|-----|
+| `10.WBS` | `1mboMQsZBZIN4u165r7omWKVXClaD3XNl` |
+| `11.주간보고` | `12qn96j3T4FiaYashK2UJsC28eTUg3Bv8` |
+| `12.월간보고` | `1wvDKJR4-yAQS2nI-o7QK8olkvsIFBe-O` |
+
+#### 복사 대상 — 파일 (4개)
+
+| 파일명 | ID | 형식 |
+|--------|-----|------|
+| `PM-03_WBS_프로젝트명(템플릿)` | `17j4iteImNMV9s5x1GEk_lJQ9AjkKlBUINTbUPFXYBkY` | Google Spreadsheet |
+| `AY-01_요구사항정의서_프로젝트명(템플릿)` | `1EamAWmOOg596BlKREsYvJ8fHwuStM-73` | xlsx |
+| `제안서_목차_프로젝트명(템플릿)` | `1NuekQ_5IjArhoypuAR8_Wu9BPEpdQ_BN` | xlsx |
+| `DE-02_IA설계서_프로젝트명(템플릿)` | `15-_nHuibTR-q4IdgTujsaIdEw8TfSjN7` | xlsx |
+
+#### 복사 실행 방법
+
+Google Drive MCP는 파일 복사(copy) API를 직접 지원하지 않으므로 Python 스크립트를 사용한다:
+
+```bash
+cd 아데오\ 에이전트\ 시스템
+python scripts/generators/copy_template.py --project-folder-id "{프로젝트 폴더 ID}"
+```
+
+`copy_template.py`는 위 표의 폴더 3개 + 파일 4개를 Drive API `files.copy`로 복사하고, 파일명에서 `(템플릿)` 제거 + `프로젝트명` → 실제 프로젝트명으로 치환한다.
+
+#### 파일명 변환 규칙
+
+`{파일명(템플릿)}` → `{파일명_실제프로젝트명}` (예: `PM-03_WBS_프로젝트명(템플릿)` → `PM-03_WBS_더케이예다함-홈페이지개편`)
+
+#### 복사 후 처리
+
+복사된 파일의 내용 수정은 각 담당 에이전트/스킬이 해당 단계 진입 시 수행한다:
+- `PM-03_WBS_*`: `project-kickoff` 스킬의 Step 3에서 설정 탭 업데이트
+- `AY-01_요구사항정의서_*`: `requirements-writer` 스킬에서 내용 채우기
+- `제안서_목차_*`: `proposal-writer` 스킬에서 내용 채우기
+- `DE-02_IA설계서_*`: `ia-generator` 스킬에서 내용 채우기
+
+---
+
 ### 파일 생성 원칙
 
 1. **Blueprint → Google Drive 전용**:
@@ -235,7 +288,7 @@ Google Drive MCP로 스프레드시트를 생성할 때 **모든 헤더 행(1행
 
 2. **MCP 도구 권한**: Google Drive·Figma MCP 도구는 `.claude/settings.json`의 `allowedTools`에 사전 등록되어 있어 매번 권한을 묻지 않는다. 추가 확인 없이 바로 실행한다.
 
-3. **Python 생성기 → Drive MCP 업로드**: Google Sheet 산출물은 `scripts/generators/gen_*.py`로 `.xlsx`를 생성한 뒤 `mcp__claude_ai_Google_Drive__create_file`로 업로드한다. 직접 코드를 작성하거나 Apps Script를 생성하지 않는다.
+3. **템플릿 복사 → 내용 수정**: Google Sheet 산출물(PM-03, AY-01, DE-02, 제안서 목차 등)은 rfp-analyzer Phase 3에서 복사된 템플릿 파일을 기반으로 내용을 수정한다. 처음부터 새 파일을 생성하지 않는다. 복사 실행은 `scripts/generators/copy_template.py` 사용. 템플릿에 없는 산출물에 한해서만 Drive MCP 직접 생성 허용.
 
 4. **MCP 직접 생성**: Figma 산출물은 Figma MCP로 즉시 생성한다. 로컬 `.md` 파일로 초안을 작성한 뒤 업로드하는 방식 금지.
 

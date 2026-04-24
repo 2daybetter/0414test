@@ -50,7 +50,7 @@ Figma 파일 ({프로젝트명})
 
 | 대상 | 배치 방향 | 간격 |
 |------|---------|------|
-| Section | 좌 → 우 | 1200px |
+| Section | 좌 → 우 | 1280px |
 | Frame (Section 내) | 위 → 아래 | 800px |
 
 ---
@@ -59,25 +59,63 @@ Figma 파일 ({프로젝트명})
 
 ### FO Frame 레이어 트리
 
+> **GNB 실측 기준** (범정부 UI/UX 표준프로토타입 Figma, fileKey: `MxyagR7eWWYbElFNGoRN3Z`):  
+> TOP bar 96px + Navigation bar 108px = **204px 2-layer 구조**  
+> 캔버스 전체 너비 1920px / Inner 콘텐츠 너비 **1280px** (좌우 여백 각 320px)
+
 ```
-Frame (FO-N-NN 화면명)  [1440×1024px]
-├── GNB (Height: 80px, Fill: #FFFFFF, Stroke bottom: #E0E2EA 1px)
-│   ├── Inner (Max-width: 1200px, Auto Layout Row, align: center)
-│   │   ├── Logo (Rectangle 140×40, Fill: #256EF4)
-│   │   ├── NavMenu (Auto Layout Row, gap: 32)
-│   │   │   └── NavItem × N (Text 17px Regular #1A1E2B / Active: #256EF4 + border-bottom)
-│   │   └── AuthGroup (Auto Layout Row, gap: 8)
-│   │       ├── LoginBtn (Tertiary Button, 15px)
-│   │       └── SignupBtn (Primary Button, Small)
+Frame (FO-N-NN 화면명)  [1920×1080px 이상 — 실제 높이는 콘텐츠에 맞춰 가변]
+│
+├── GNB (Height: 204px, Fill: #FFFFFF, Stroke bottom: #E0E2EA 1px)
+│   │
+│   ├── TOPBar (Height: 96px, Width: 1920px, Fill: #FFFFFF)
+│   │   └── Inner (Width: 1280px, Auto Layout Row, align: center, margin: 0 auto)
+│   │       ├── Logo (Height: 40px, 기관 로고 이미지)
+│   │       ├── SiteName (Text 20px Bold #1A1E2B)
+│   │       └── UtilityGroup (Auto Layout Row, gap: 16, align: right)
+│   │           ├── ScreenSize (텍스트 크기 5단계 토글 — 14px/15px/17px/19px/21px)
+│   │           ├── Language (드롭다운 — 한국어 / English / 中文)
+│   │           ├── MyGOV (드롭다운 — 나의GOV 로그인·마이페이지 진입)
+│   │           └── Support (드롭다운 — 인증센터 / 누리집안내지도)
+│   │
+│   ├── NavBar (Height: 108px, Width: 1920px, Fill: #FFFFFF, Stroke bottom: #E0E2EA 1px)
+│   │   └── Inner (Width: 1280px, Auto Layout Row, align: center, margin: 0 auto)
+│   │       └── NavMenu (Auto Layout Row, gap: 40)
+│   │           └── NavItem × N (Text 17px SemiBold #1A1E2B / Active: #256EF4 + border-bottom 2px)
+│   │
+│   └── MegaMenu (Position: absolute, Top: 204px, Width: 1920px, Fill: #FFFFFF, Shadow: 0 8px 24px rgba(0,0,0,0.12))
+│       └── Inner (Width: 1280px, Auto Layout Row, margin: 0 auto)
+│           ├── 2depth 패널 (Width: 312px, Height: auto, Padding: 24px 20px)
+│           │   └── MenuItem × N (Height: 48px, Text 17px Regular #1A1E2B / Hover: Fill #F7F8FA)
+│           ├── 3depth 기본형 패널 (Width: ~432px, Padding: 24px 20px)
+│           │   └── SubItem × N (Text 15px Regular #373D4D)
+│           └── 3depth 설명형 패널 (Width: ~532px, Padding: 24px 20px)
+│               └── SubItem × N (Title 15px SemiBold + Desc 14px #6B7280)
+│
 ├── ContentArea (Auto Layout Column, width: 100%)
 │   └── {화면 유형별 구성 — 아래 섹션 참조}
-└── Footer (Height: 200px, Fill: #1A1E2B)
-    ├── Inner (Max-width: 1200px)
-    │   ├── LogoArea (Logo + 기관명 Text 17px #FFFFFF)
-    │   ├── FooterNav (Auto Layout Row, gap: 24)
-    │   │   └── NavLink × N (Text 15px #B0B5C4)
-    │   └── CompanyInfo (Text 14px #6B7280, line-height: 160%)
-    └── Copyright (Text 13px #6B7280, border-top: #373D4D)
+│
+└── Footer (variants 3종 — 아래 실측 기준)
+    │
+    ├── [기본형] Footer-Basic (Height: 448px, Width: 1920px, Fill: #1A1E2B)
+    │   └── Inner (Width: 1280px, margin: 0 auto, Auto Layout Column, gap: 32, Padding: 48px 0)
+    │       ├── TopRow (Auto Layout Row, justify: space-between)
+    │       │   ├── LogoArea (Logo + 기관명 Text 19px Bold #FFFFFF)
+    │       │   └── SNSGroup (Auto Layout Row, gap: 12 — SNS 아이콘 링크)
+    │       ├── LinkGrid (4-column, gap: 24 — 각 링크셀 308×48px)
+    │       │   └── LinkCell × N (Text 15px #B0B5C4 / Hover: #FFFFFF)
+    │       ├── Divider (Fill: #373D4D, Height: 1px)
+    │       └── CompanyInfo (Text 14px #6B7280, line-height: 160%)
+    │
+    ├── [확장형] Footer-Extended (Height: 644px, Width: 1920px, Fill: #1A1E2B)
+    │   └── Inner (Width: 1280px — 기본형 + 패밀리사이트 드롭다운 행 추가)
+    │       ├── (기본형 구조 동일)
+    │       ├── FamilySite (Height: 48px, Dropdown — 관련 기관 사이트 목록)
+    │       └── Copyright (Text 13px #6B7280, border-top: #373D4D)
+    │
+    └── [관련기관링크바] Footer-RelatedBar (Height: 56px, Width: 1920px, Fill: #256EF4)
+        └── Inner (Width: 1280px, Auto Layout Row, align: center)
+            └── LinkItem × N (Text 15px #FFFFFF, gap: 32)
 ```
 
 ### BO Frame 레이어 트리
@@ -113,7 +151,7 @@ ContentArea
 │   ├── Title (Text 48px Bold #FFFFFF, line-height: 120%)
 │   ├── Subtitle (Text 19px Regular #F7F8FA, line-height: 160%)
 │   └── CTAButton (Primary Button, Large: Height 56px)
-├── Section1 (Padding: 80px 0, Inner max-width: 1200px)
+├── Section1 (Padding: 80px 0, Inner max-width: 1280px)
 │   ├── SectionTitle (Text 32px Bold #1A1E2B)
 │   ├── SectionDesc (Text 17px Regular #6B7280)
 │   └── CardGrid (3-column Auto Layout, gap: 24px)
@@ -125,7 +163,7 @@ ContentArea
 
 ```
 ContentArea (Padding: 64px 0)
-├── Inner (max-width: 1200px, Auto Layout Column, gap: 32)
+├── Inner (max-width: 1280px, Auto Layout Column, gap: 32)
 │   ├── PageHeader
 │   │   ├── Breadcrumb (Text 14px #6B7280, Separator: ">")
 │   │   ├── PageTitle (Text 36px Bold #1A1E2B)
@@ -150,13 +188,13 @@ ContentArea (Padding: 64px 0)
 
 ```
 ContentArea (Padding: 64px 0)
-├── Inner (max-width: 1200px)
+├── Inner (max-width: 1280px)
 │   ├── Breadcrumb (Text 14px #6B7280)
 │   ├── DetailHeader (gap: 16)
 │   │   ├── Category (Badge)
 │   │   ├── Title (Text 36px Bold #1A1E2B, line-height: 130%)
 │   │   └── MetaInfo (Text 14px Regular #6B7280 — 작성일, 조회수 등)
-│   ├── ContentImage (Width: 1200, Radius: 8px, Max-height: 480px)
+│   ├── ContentImage (Width: 1280, Radius: 8px, Max-height: 480px)
 │   ├── Body (max-width: 800px, margin: 0 auto)
 │   │   └── BodyText (Text 17px Regular #373D4D, line-height: 160%)
 │   ├── Divider (Fill: #E0E2EA, Height: 1px)
@@ -345,8 +383,8 @@ ContentArea
 
 | 항목 | PC | Mobile |
 |------|----|----|
-| GNB | 80px 전체 너비 | 56px + 햄버거 메뉴 (32×32px) |
-| 콘텐츠 여백 | 좌우 각 120px | 좌우 각 20px |
+| GNB | 204px (TOP 96px + Nav 108px) | 96px 헤더 + 124px 유틸리티 바 (햄버거 32×32px) |
+| 콘텐츠 여백 | 좌우 각 320px (Inner 1280px) | 좌우 각 20px (KRDS 4컬럼 그리드) |
 | 카드 그리드 | 3컬럼 | 1컬럼 |
 | 폼 필드 | 2컬럼 (BO) / 800px 중앙 | 1컬럼 100% 너비 |
 | 버튼 | 자동 너비 | Full Width (100%) |

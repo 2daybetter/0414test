@@ -63,34 +63,38 @@ description: 구축 프로젝트 착수 문서(PM-01, PM-03)를 생성하는 스
 
 ---
 
-### Step 3: WBS Google Sheets 생성 (PM-03)
+### Step 3: WBS Google Sheets 업데이트 (PM-03)
 
-`scripts/generators/gen_wbs_gsheet.py`를 실행하여 표준 wbs_template을 복사하고 설정 탭을 업데이트한다.
-템플릿의 모든 수식·서식·간트차트·대시보드·주간보고 탭이 그대로 유지되며, 설정 값 변경만으로 전체 시트가 자동 반영된다.
+rfp-analyzer Phase 3-3에서 템플릿으로부터 이미 복사된 `PM-03_WBS_{프로젝트명}` 파일을 찾아 설정 탭 값만 업데이트한다.  
+**새 파일을 생성하지 않는다 — 복사된 파일의 설정 탭을 수정하는 방식으로 진행한다.**
 
-**wbs_template 구조**:
-- **설정 탭**: 프로젝트명·시작일·종료일·PM·타임라인 길이·단계별 가중치·공휴일 목록
-- **WBS 대시보드 탭**: 전체 진척률·단계별 진척·작업 카운트·주요 마일스톤 자동 계산
-- **WBS 일정 탭**: Gantt 차트 (6단계 × 세부 작업, 일별 타임라인 ~210일)
-- **주간보고_template 탭**: 프로젝트 주간보고 양식 (WBS 연동)
+**WBS 파일 위치 확인**:
+1. `.status` 파일의 `outputs.wbs-template` URL 참조 (rfp-analyzer가 기록)
+2. 없으면 Drive에서 `PM-03_WBS_{프로젝트명}` 검색: `mcp__claude_ai_Google_Drive__search_files` 사용
 
-**실행 명령**:
+**설정 탭 업데이트 명령**:
 ```bash
 cd 아데오\ 에이전트\ 시스템
-python scripts/generators/gen_wbs_gsheet.py \
+python scripts/generators/update_wbs_settings.py \
+  --sheet-id "{복사된 WBS 파일의 SHEET_ID}" \
   --project "{프로젝트명}" \
   --start "{시작일 YYYY-MM-DD}" \
   --end "{종료일 YYYY-MM-DD}" \
-  --pm "{PM 이름}" \
-  --folder-id "{Google Drive 프로젝트 폴더 ID}"
+  --pm "{PM 이름}"
 ```
 
 **업데이트 항목** (설정 탭 B열):
 - 프로젝트명, 프로젝트 시작일, 프로젝트 종료일, 프로젝트 PM, 타임라인 길이(일) 자동 계산
 
+**WBS 파일 구조** (템플릿에서 복사된 그대로 유지됨):
+- **설정 탭**: 프로젝트명·시작일·종료일·PM·타임라인 길이·단계별 가중치·공휴일 목록
+- **WBS 대시보드 탭**: 전체 진척률·단계별 진척·작업 카운트·주요 마일스톤 자동 계산
+- **WBS 일정 탭**: Gantt 차트 (6단계 × 세부 작업, 일별 타임라인 ~210일)
+- **주간보고_template 탭**: 프로젝트 주간보고 양식 (WBS 연동)
+
 **실행 순서**:
-1. 위 명령 실행 → stdout에서 `SHEET_ID=` / `SHEET_URL=` 추출
-2. 반환된 URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wbs`에 기록 (mcp__claude_ai_Google_Drive__create_file)
+1. 위 명령 실행 → stdout에서 `SHEET_ID=` / `SHEET_URL=` 확인
+2. URL을 Google Drive 아데오 프로젝트/{프로젝트명}/.status/.status 파일의 `outputs.wbs`에 기록 (mcp__claude_ai_Google_Drive__create_file)
 3. `gen_weekly_report_wbs.py`로 주간보고_template 탭 초기화:
    ```bash
    python scripts/generators/gen_weekly_report_wbs.py --sheet-id "{SHEET_ID}"

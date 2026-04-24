@@ -1,0 +1,6 @@
+# 아데오 에이전트 시스템 - 보고서 설정
+# 서비스 계정 키 파일 경로 (절대 경로 권장)
+service_account_path: "C:/Users/LG/.config/gspread/adeo-service-account.json.json"
+
+# 업무이력DB Google Sheet ID (나중에 채움)
+work_history_sheet_id: ""
